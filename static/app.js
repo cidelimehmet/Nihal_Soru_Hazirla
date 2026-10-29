@@ -39,7 +39,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   // Başlangıçta canlı başlıkları ayarla
   updatePaperHeaderLive();
-  renderExamPages();
+  
+  // 15 Saniyede Bir Otomatik Taslak Kaydetme Motorunu Başlat
+  startAutoSaveEngine();
+
+  // Varsa önceki oturumdan kalan taslağı geri yükle (Veri Kaybı Önleme)
+  await checkAndRestoreDraft();
 });
 
 // --- AYARLAR VE VERİ YÜKLEME ---
@@ -154,6 +159,111 @@ function handleLogout() {
   showLogin();
 }
 
+// ==============================================================
+// OTOMATİK TASLAK KAYIT MOTORU (15 SANİYEDE BİR ÇALIŞIR)
+// Soru hazırlandığında 1 defa hemen kaydeder, sonra her 15 saniyede
+// bir arka planda sessizce taslak alır; olası kapanmalarda sıfır veri kaybı!
+// ==============================================================
+let _autoSaveTimer = null;
+let _isDraftDirty = false;
+
+function startAutoSaveEngine() {
+  if (_autoSaveTimer) clearInterval(_autoSaveTimer);
+  _autoSaveTimer = setInterval(async () => {
+    if (state.currentExam && state.currentExam.questions && state.currentExam.questions.length > 0) {
+      await saveDraft(false); // Sessiz periyodik kayıt
+    }
+  }, 15000); // Tam 15 saniyede bir
+}
+
+async function saveDraft(showVisualIndicator = true) {
+  if (!state.currentExam || !state.currentExam.questions || state.currentExam.questions.length === 0) {
+    return;
+  }
+
+  const indicator = document.getElementById("autoSaveIndicator");
+  const indicatorText = document.getElementById("autoSaveText");
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+
+  try {
+    // 1. Tarayıcı Yerel Belleğine Anında Kaydet (Sıfır milisaniye)
+    localStorage.setItem("ti_active_draft", JSON.stringify(state.currentExam));
+
+    // 2. Sunucuya Arka Planda Sessizce Kaydet
+    fetch("/api/draft", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(state.currentExam)
+    }).catch(e => console.warn("Backend draft save warning:", e));
+
+    if (indicator && indicatorText) {
+      indicator.classList.remove("hidden");
+      indicatorText.textContent = `Taslak Korundu (${timeStr})`;
+    }
+  } catch (e) {
+    console.error("Taslak kaydetme hatası:", e);
+  }
+}
+
+async function checkAndRestoreDraft() {
+  // 1. Önce localStorage kontrolü
+  let draftData = null;
+  const localDraft = localStorage.getItem("ti_active_draft");
+  if (localDraft) {
+    try {
+      draftData = JSON.parse(localDraft);
+    } catch (e) {}
+  }
+
+  // 2. localStorage boşsa backend /api/draft kontrolü
+  if (!draftData || !draftData.questions || draftData.questions.length === 0) {
+    try {
+      const res = await fetch("/api/draft");
+      const data = await res.json();
+      if (data.status === "success" && data.draft && data.draft.questions) {
+        draftData = data.draft;
+      }
+    } catch (e) {}
+  }
+
+  // Eğer geçerli bir taslak varsa geri yükle
+  if (draftData && draftData.questions && draftData.questions.length > 0) {
+    state.currentExam = draftData;
+    
+    // Sol panel kontrollerini taslağa göre senkronize et
+    if (document.getElementById("examSubject") && draftData.subject) {
+      document.getElementById("examSubject").value = draftData.subject;
+    }
+    if (document.getElementById("examGrade") && draftData.grade) {
+      document.getElementById("examGrade").value = draftData.grade;
+    }
+    if (document.getElementById("examTerm") && draftData.term) {
+      document.getElementById("examTerm").value = draftData.term;
+    }
+    if (document.getElementById("examNo") && draftData.exam_no) {
+      document.getElementById("examNo").value = draftData.exam_no;
+    }
+    if (document.getElementById("examQuestionCount")) {
+      document.getElementById("examQuestionCount").value = draftData.questions.length;
+    }
+
+    recalculateTotalPoints();
+    renderExamPages();
+
+    const indicator = document.getElementById("autoSaveIndicator");
+    const indicatorText = document.getElementById("autoSaveText");
+    if (indicator && indicatorText) {
+      indicator.classList.remove("hidden");
+      indicatorText.textContent = "Taslak Geri Yüklendi";
+    }
+
+    showToast("Önceki oturumunuzdan kalan taslak sınav otomatik olarak geri yüklendi (Veri kaybı önlendi).", "success");
+  } else {
+    renderExamPages();
+  }
+}
+
 // --- MÜFREDAT VE FORM KONTROLLERİ ---
 function populateCurriculumUI() {
   const subjectSelect = document.getElementById("examSubject");
@@ -262,6 +372,10 @@ async function handleGenerateExam() {
 
     recalculateTotalPoints();
     renderExamPages();
+    
+    // Soru hazırlandığında 1 defa ANINDA taslak kaydet (Kullanıcı Talebi)
+    await saveDraft(true);
+
     showToast("Sınav ve sorular başarıyla hazırlandı!", "success");
   } catch (err) {
     showToast(err.message, "error");
@@ -479,15 +593,16 @@ function createQuestionCardHtml(q, index) {
 function updateQuestionText(idx, newText) {
   if (state.currentExam.questions[idx]) {
     state.currentExam.questions[idx].question_text = newText.trim();
-    // Diğer sekmelere de anında yansıt
     renderAnswerKeySheet();
     renderSourceVerificationSheet();
+    saveDraft(false); // Canlı taslağa anında kaydet
   }
 }
 
 function updateArabicText(idx, newText) {
   if (state.currentExam.questions[idx]) {
     state.currentExam.questions[idx].arabic_text = newText.trim();
+    saveDraft(false);
   }
 }
 
@@ -496,6 +611,7 @@ function updateQuestionPoints(idx, newPoints) {
   if (state.currentExam.questions[idx]) {
     state.currentExam.questions[idx].points = pts;
     recalculateTotalPoints();
+    saveDraft(false);
   }
 }
 
@@ -1153,6 +1269,259 @@ function switchView(view) {
   }
 }
 
+// ==============================================================
+// MÜFREDAT VE KONU YÖNETİM MASASI (YENİ TALEP)
+// ==============================================================
+state.managerData = {
+  subject: "dkab",
+  grade: 5,
+  units: []
+};
+
+async function openCurriculumManager() {
+  const subject = document.getElementById("examSubject") ? document.getElementById("examSubject").value : "dkab";
+  const grade = document.getElementById("examGrade") ? parseInt(document.getElementById("examGrade").value, 10) : 5;
+
+  setLoading(true, "Ünite ve konular yükleniyor...");
+  try {
+    const res = await fetch(`/api/curriculum-manager?subject=${subject}&grade=${grade}`);
+    const data = await res.json();
+    state.managerData = {
+      subject,
+      grade,
+      subject_name: data.subject_name || "Ders",
+      units: JSON.parse(JSON.stringify(data.units || []))
+    };
+
+    document.getElementById("currManagerSubtitle").textContent = 
+      `${grade}. Sınıf ${state.managerData.subject_name} dersinin ünite, konu ve sayfa aralıklarını aşağıdan yönetebilirsiniz.`;
+
+    renderCurriculumManagerUI();
+    document.getElementById("curriculumManagerModal").classList.remove("hidden");
+  } catch (err) {
+    showToast("Üniteler yüklenemedi: " + err.message, "error");
+  } finally {
+    setLoading(false);
+  }
+}
+
+function closeCurriculumModal() {
+  document.getElementById("curriculumManagerModal").classList.add("hidden");
+}
+
+function renderCurriculumManagerUI() {
+  const container = document.getElementById("curriculumUnitsList");
+  if (!container) return;
+  container.innerHTML = "";
+
+  const units = state.managerData.units;
+
+  if (units.length === 0) {
+    container.innerHTML = `<div class="text-center py-8 text-xs text-slate-400">Bu ders için tanımlı ünite bulunamadı. Yeni ünite ekleyebilirsiniz.</div>`;
+    return;
+  }
+
+  units.forEach((u, uIdx) => {
+    const card = document.createElement("div");
+    card.className = "p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3";
+
+    // Ünite Başlığı ve Sayfa Aralığı
+    const headerRow = `
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex-1 min-w-[240px]">
+          <label class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Ünite Adı</label>
+          <input type="text" value="${u.name || ""}" 
+                 class="w-full text-xs font-bold text-slate-900 px-2.5 py-1.5 bg-white border border-slate-300 rounded focus:ring-2 focus:ring-blue-600"
+                 onchange="updateUnitTitle(${uIdx}, this.value)">
+        </div>
+        <div class="flex items-center gap-2">
+          <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">Kitap Sayfaları</label>
+            <div class="flex items-center gap-1 text-xs">
+              <input type="number" min="1" value="${(u.page_range && u.page_range[0]) || 1}" 
+                     class="w-16 px-2 py-1 text-center bg-white border border-slate-300 rounded font-semibold text-blue-900"
+                     onchange="updateUnitPageRange(${uIdx}, 0, this.value)">
+              <span class="text-slate-400">-</span>
+              <input type="number" min="1" value="${(u.page_range && u.page_range[1]) || 50}" 
+                     class="w-16 px-2 py-1 text-center bg-white border border-slate-300 rounded font-semibold text-blue-900"
+                     onchange="updateUnitPageRange(${uIdx}, 1, this.value)">
+            </div>
+          </div>
+          <div class="pt-3">
+            <button type="button" onclick="deleteUnit(${uIdx})" class="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded" title="Bu Üniteyi Sil">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Alt Konular Listesi
+    let topicsListHtml = "";
+    if (u.topics && Array.isArray(u.topics)) {
+      topicsListHtml = u.topics.map((top, tIdx) => {
+        // Diğer ünitelere aktarma seçenekleri
+        const otherUnitsOptions = units.map((otherU, otherIdx) => {
+          if (otherIdx === uIdx) return "";
+          return `<option value="${otherIdx}">${otherU.name ? otherU.name.slice(0, 24) : `Ünite ${otherIdx+1}`}...</option>`;
+        }).join("");
+
+        return `
+          <div class="flex items-center justify-between gap-2 p-1.5 bg-white border border-slate-200 rounded text-xs">
+            <div class="flex items-center gap-1.5 flex-1">
+              <span class="text-slate-400 font-bold text-[10px] w-4">${tIdx + 1}.</span>
+              <input type="text" value="${top || ""}" 
+                     class="w-full text-xs text-slate-800 px-2 py-1 border border-transparent hover:border-slate-300 focus:border-blue-600 rounded"
+                     onchange="updateTopicTitle(${uIdx}, ${tIdx}, this.value)">
+            </div>
+            
+            <div class="flex items-center gap-1">
+              ${otherUnitsOptions ? `
+                <select class="text-[10px] py-1 px-1.5 bg-slate-100 hover:bg-blue-50 border border-slate-200 rounded text-slate-600 font-medium cursor-pointer"
+                        onchange="moveTopicToAnotherUnit(${uIdx}, ${tIdx}, this.value); this.selectedIndex = 0;">
+                  <option value="" disabled selected>➡️ Başka Üniteye Aktar</option>
+                  ${otherUnitsOptions}
+                </select>
+              ` : ""}
+              <button type="button" onclick="deleteTopic(${uIdx}, ${tIdx})" class="p-1 text-slate-400 hover:text-red-600" title="Konuyu Sil">
+                ✕
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    card.innerHTML = `
+      ${headerRow}
+      <div class="space-y-1.5 pt-1">
+        <label class="text-[10px] font-bold text-slate-600 uppercase flex items-center justify-between">
+          <span>Kapsamdaki Alt Konular (${(u.topics || []).length})</span>
+          <button type="button" onclick="addNewTopicToUnit(${uIdx})" class="text-[10px] text-blue-700 hover:text-blue-900 font-bold flex items-center gap-0.5">
+            ➕ Konu Ekle
+          </button>
+        </label>
+        <div class="space-y-1">
+          ${topicsListHtml}
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function updateUnitTitle(uIdx, title) {
+  if (state.managerData.units[uIdx]) {
+    state.managerData.units[uIdx].name = title.trim();
+  }
+}
+
+function updateUnitPageRange(uIdx, pos, val) {
+  if (state.managerData.units[uIdx]) {
+    if (!state.managerData.units[uIdx].page_range) {
+      state.managerData.units[uIdx].page_range = [1, 50];
+    }
+    state.managerData.units[uIdx].page_range[pos] = parseInt(val, 10) || 1;
+  }
+}
+
+function updateTopicTitle(uIdx, tIdx, val) {
+  if (state.managerData.units[uIdx] && state.managerData.units[uIdx].topics) {
+    state.managerData.units[uIdx].topics[tIdx] = val.trim();
+  }
+}
+
+function addNewTopicToUnit(uIdx) {
+  if (state.managerData.units[uIdx]) {
+    if (!state.managerData.units[uIdx].topics) state.managerData.units[uIdx].topics = [];
+    state.managerData.units[uIdx].topics.push("Yeni Konu Başlığı");
+    renderCurriculumManagerUI();
+  }
+}
+
+function deleteTopic(uIdx, tIdx) {
+  if (state.managerData.units[uIdx] && state.managerData.units[uIdx].topics) {
+    state.managerData.units[uIdx].topics.splice(tIdx, 1);
+    renderCurriculumManagerUI();
+  }
+}
+
+// Bir konuyu başka bir üniteye aktarma (Kullanıcı Talebi)
+function moveTopicToAnotherUnit(fromUnitIdx, topicIdx, toUnitIdxStr) {
+  const toUnitIdx = parseInt(toUnitIdxStr, 10);
+  const units = state.managerData.units;
+  
+  if (units[fromUnitIdx] && units[toUnitIdx]) {
+    const topicText = units[fromUnitIdx].topics.splice(topicIdx, 1)[0];
+    if (!units[toUnitIdx].topics) units[toUnitIdx].topics = [];
+    units[toUnitIdx].topics.push(topicText);
+    renderCurriculumManagerUI();
+    showToast(`Konu "${units[toUnitIdx].name || 'Hedef Ünite'}"ye aktarıldı.`, "info");
+  }
+}
+
+function addNewUnitToManager() {
+  const newNum = state.managerData.units.length + 1;
+  const newUnit = {
+    id: `${state.managerData.subject}${state.managerData.grade}_u${Date.now()}`,
+    name: `${newNum}. Ünite: Yeni Ünite`,
+    topics: ["Yeni Konu 1"],
+    page_range: [1, 50]
+  };
+  state.managerData.units.push(newUnit);
+  renderCurriculumManagerUI();
+  showToast("Yeni ünite eklendi. Konu ve sayfalarını düzenleyebilirsiniz.", "info");
+}
+
+function deleteUnit(uIdx) {
+  if (confirm("Bu üniteyi ve altındaki konuları silmek istediğinize emin misiniz?")) {
+    state.managerData.units.splice(uIdx, 1);
+    renderCurriculumManagerUI();
+  }
+}
+
+async function saveCurriculumManagerChanges() {
+  setLoading(true, "Müfredat değişiklikleri kaydediliyor...");
+  try {
+    const res = await fetch("/api/curriculum-manager/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        subject: state.managerData.subject,
+        grade: state.managerData.grade,
+        units: state.managerData.units
+      })
+    });
+    if (!res.ok) throw new Error("Kaydedilemedi.");
+    await loadCurriculum();
+    onSubjectOrGradeChange();
+    closeCurriculumModal();
+    showToast("Üniteler ve konular başarıyla güncellendi!", "success");
+  } catch (err) {
+    showToast(err.message, "error");
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function resetCurriculumToDefault() {
+  if (confirm("Müfredatı MEB orijinal fabrika ayarlarına sıfırlamak istediğinize emin misiniz?")) {
+    setLoading(true, "Sıfırlanıyor...");
+    try {
+      await fetch("/api/curriculum-manager/reset", { method: "POST" });
+      await loadCurriculum();
+      onSubjectOrGradeChange();
+      await openCurriculumManager(); // Yeniden yükle
+      showToast("MEB orijinal müfredatına dönüldü.", "info");
+    } catch (err) {
+      showToast("Sıfırlanamadı.", "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+}
+
 // --- AYARLAR MODALI ---
 function openSettingsModal() {
   document.getElementById("settingsSchoolHeader").value = state.config.school_header || "";
@@ -1239,6 +1608,9 @@ function setupEventListeners() {
   document.getElementById("bankFilterGrade")?.addEventListener("change", loadQuestionBank);
   document.getElementById("bankFilterDifficulty")?.addEventListener("change", loadQuestionBank);
   document.getElementById("bankSearchInput")?.addEventListener("input", debounce(loadQuestionBank, 300));
+
+  // Müfredat ve Konu Yöneticisi Butonu (YENİ TALEP)
+  document.getElementById("btnOpenCurriculumManager")?.addEventListener("click", openCurriculumManager);
 
   // Ayarlar Modalı
   document.getElementById("btnOpenSettings")?.addEventListener("click", openSettingsModal);

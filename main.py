@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 
-from config import get_config, save_config, BASE_DIR, EXPORTS_DIR
+from config import get_config, save_config, BASE_DIR, EXPORTS_DIR, DATA_DIR
 from curriculum_data import get_subjects, get_grades, get_units, CURRICULUM
 from gemini_engine import generate_questions_with_gemini
 from docx_exporter import generate_exam_docx, generate_answer_key_docx
@@ -134,12 +134,47 @@ async def api_login(req: LoginRequest):
 
 @app.get("/api/curriculum")
 async def api_get_curriculum():
-    return CURRICULUM
+    from curriculum_data import load_curriculum_dict
+    return load_curriculum_dict()
 
 @app.get("/api/units")
 async def api_get_units(subject: str, grade: int):
     units = get_units(subject, grade)
     return {"units": units}
+
+# --- MÜFREDAT VE KONU YÖNETİCİSİ ENDPOINTLERİ (YENİ TALEP) ---
+@app.get("/api/curriculum-manager")
+async def api_get_curriculum_manager(subject: str, grade: int):
+    from curriculum_data import get_units, load_curriculum_dict
+    curr = load_curriculum_dict()
+    units = get_units(subject, grade)
+    return {
+        "status": "success",
+        "subject": subject,
+        "grade": int(grade),
+        "subject_name": curr.get(subject, {}).get("name", subject),
+        "units": units
+    }
+
+@app.post("/api/curriculum-manager/save")
+async def api_save_curriculum_manager(req: dict):
+    from curriculum_data import load_curriculum_dict, save_curriculum_dict
+    subject = req.get("subject")
+    grade = int(req.get("grade", 5))
+    new_units = req.get("units", [])
+    
+    curr = load_curriculum_dict()
+    if subject in curr and grade in curr[subject]["grades"]:
+        curr[subject]["grades"][grade]["units"] = new_units
+        save_curriculum_dict(curr)
+        return {"status": "success", "message": "Üniteler ve konular başarıyla güncellendi!"}
+    raise HTTPException(status_code=400, detail="Geçersiz ders veya sınıf.")
+
+@app.post("/api/curriculum-manager/reset")
+async def api_reset_curriculum_manager():
+    from curriculum_data import reset_curriculum_to_default
+    reset_curriculum_to_default()
+    return {"status": "success", "message": "Müfredat MEB orijinal varsayılan ayarlarına döndürüldü."}
 
 @app.post("/api/generate-exam")
 async def api_generate_exam(req: GenerateExamRequest):
@@ -261,6 +296,40 @@ async def api_generate_bank_questions(req: BankGenerateRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# --- TASLAK VE OTOMATİK KAYIT ENDPOINTLERİ (15 SN VERİ KAYBI ÖNLEME) ---
+DRAFT_FILE = DATA_DIR / "active_draft.json"
+
+@app.get("/api/draft")
+async def api_get_draft():
+    if DRAFT_FILE.exists():
+        try:
+            import json
+            with open(DRAFT_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return {"status": "success", "draft": data}
+        except Exception:
+            pass
+    return {"status": "none", "draft": None}
+
+@app.post("/api/draft")
+async def api_save_draft(req: dict):
+    try:
+        import json
+        with open(DRAFT_FILE, "w", encoding="utf-8") as f:
+            json.dump(req, f, ensure_ascii=False, indent=2)
+        return {"status": "success", "message": "Taslak kaydedildi."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/draft")
+async def api_delete_draft():
+    if DRAFT_FILE.exists():
+        try:
+            DRAFT_FILE.unlink()
+        except Exception:
+            pass
+    return {"status": "success", "message": "Taslak temizlendi."}
+
 # --- DIŞA AKTARMA (DOCX) ---
 
 @app.post("/api/export/docx")
@@ -316,7 +385,32 @@ async def api_export_docx(req: dict):
     )
 
 if __name__ == "__main__":
+    import threading
+    import time
+    import urllib.request
+    import webbrowser
+
     cfg = get_config()
     port = cfg.get("port", 8000)
-    print(f"Tevfik İleri İHO Soru Hazırlama & Soru Bankası: http://localhost:{port}")
+
+    # Sunucu tam ayağa kalktığında tarayıcıyı açan akıllı kontrol mekanizması
+    def open_browser_when_ready():
+        url = f"http://127.0.0.1:{port}"
+        check_url = f"http://127.0.0.1:{port}/api/config"
+        for _ in range(40): # En fazla 20 saniye kontrol et
+            try:
+                time.sleep(0.5)
+                req = urllib.request.Request(check_url, headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req, timeout=1) as resp:
+                    if resp.status == 200:
+                        print(f"Sunucu hazir! Tarayici aciliyor: {url}")
+                        webbrowser.open(url)
+                        break
+            except Exception:
+                pass
+
+    threading.Thread(target=open_browser_when_ready, daemon=True).start()
+
+    print(f"Tevfik İleri İHO Soru Hazırlama & Soru Bankası Başlatılıyor...")
+    print(f"Adres: http://localhost:{port}")
     uvicorn.run("main:app", host="127.0.0.1", port=port, reload=True)

@@ -1,10 +1,15 @@
 """
-Müfredat, Kazanımlar ve Kitap Sayfa Haritası Modülü
-İmam Hatip Ortaokulu 5, 6, 7 ve 8. Sınıf Din Kültürü, Kur'an-ı Kerim ve Peygamberimizin Hayatı
-derslerinin 2026 yılı MEB müfredat ünite, tema ve kazanımlarını içerir.
+Müfredat, Kazanımlar ve Kitap Sayfa Haritası Modülü - Dinamik & Özelleştirilebilir Sürüm
+data/custom_curriculum.json dosyasından okur ve öğretmenin düzenlemelerine izin verir.
 """
 
-CURRICULUM = {
+import json
+from pathlib import Path
+from config import DATA_DIR
+
+CUSTOM_CURRICULUM_PATH = DATA_DIR / "custom_curriculum.json"
+
+DEFAULT_CURRICULUM = {
     "dkab": {
         "name": "Din Kültürü ve Ahlak Bilgisi",
         "grades": {
@@ -394,25 +399,57 @@ CURRICULUM = {
     }
 }
 
+def load_curriculum_dict() -> dict:
+    """custom_curriculum.json varsa oradan yükler, yoksa varsayılanı döndürür."""
+    if CUSTOM_CURRICULUM_PATH.exists():
+        try:
+            with open(CUSTOM_CURRICULUM_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                # JSON anahtarlarındaki string sayıları (örn "5") int'e çevir
+                for subj, sdata in data.items():
+                    if "grades" in sdata:
+                        int_grades = {}
+                        for g_str, g_data in sdata["grades"].items():
+                            int_grades[int(g_str)] = g_data
+                        sdata["grades"] = int_grades
+                return data
+        except Exception as e:
+            print(f"Error loading custom curriculum: {e}")
+    return DEFAULT_CURRICULUM
+
+def save_curriculum_dict(curriculum_data: dict):
+    """Müfredat değişikliklerini custom_curriculum.json dosyasına kaydeder."""
+    with open(CUSTOM_CURRICULUM_PATH, "w", encoding="utf-8") as f:
+        json.dump(curriculum_data, f, ensure_ascii=False, indent=2)
+
+def reset_curriculum_to_default():
+    """Öğretmen sıfırlamak isterse özel dosyayı silip varsayılan MEB kütüphanesine döner."""
+    if CUSTOM_CURRICULUM_PATH.exists():
+        CUSTOM_CURRICULUM_PATH.unlink()
+
+# Canlı referans
+CURRICULUM = load_curriculum_dict()
+
 def get_subjects():
-    return [
-        {"id": k, "name": v["name"]}
-        for k, v in CURRICULUM.items()
-    ]
+    curr = load_curriculum_dict()
+    return [{"id": k, "name": v["name"]} for k, v in curr.items()]
 
 def get_grades(subject_id: str):
-    if subject_id in CURRICULUM:
-        return list(CURRICULUM[subject_id]["grades"].keys())
+    curr = load_curriculum_dict()
+    if subject_id in curr:
+        return list(curr[subject_id]["grades"].keys())
     return [5, 6, 7, 8]
 
 def get_units(subject_id: str, grade: int):
+    curr = load_curriculum_dict()
     grade = int(grade)
-    if subject_id in CURRICULUM and grade in CURRICULUM[subject_id]["grades"]:
-        return CURRICULUM[subject_id]["grades"][grade]["units"]
+    if subject_id in curr and grade in curr[subject_id]["grades"]:
+        return curr[subject_id]["grades"][grade]["units"]
     return []
 
 def get_pdf_filename(subject_id: str, grade: int):
+    curr = load_curriculum_dict()
     grade = int(grade)
-    if subject_id in CURRICULUM and grade in CURRICULUM[subject_id]["grades"]:
-        return CURRICULUM[subject_id]["grades"][grade]["pdf_pattern"]
+    if subject_id in curr and grade in curr[subject_id]["grades"]:
+        return curr[subject_id]["grades"][grade]["pdf_pattern"]
     return None

@@ -1,0 +1,264 @@
+{
+  "id": null,
+  "title": "7. Sınıf Peygamberimizin Hayatı 1. Dönem 1. Yazılı",
+  "exam_type": "yazili_sinav",
+  "subject": "siyer",
+  "subject_name": "Peygamberimizin Hayatı",
+  "grade": 7,
+  "term": "1. Dönem",
+  "exam_no": "1. Yazılı",
+  "scenario": "Özel",
+  "layout": "2_column",
+  "total_points": 100,
+  "questions": [
+    {
+      "q_order": 1,
+      "points": 10,
+      "learning_outcome": "Hz. Muhammed'in (sav) istişareye verdiği önemi Uhud Savaşı öncesindeki karar alma süreci üzerinden analiz eder.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Analiz",
+      "difficulty": "Orta",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 11-16",
+      "source_context": "Uhud Savaşı öncesinde Hz. Peygamber şehir savunması yapılmasını uygun görürken, özellikle Bedir'e katılamamış genç sahabilerin meydan savaşı yapılması yönündeki ısrarlı görüşlerini kabul etmiş ve çoğunluğun kararına uymuştur.",
+      "arabic_text": "",
+      "question_text": "Uhud Savaşı öncesinde Peygamber Efendimiz (sav), Medine içerisinde kalarak savunma savaşı yapma taraftarıydı. Ancak çoğunluğu gençlerden oluşan sahabeler, şehrin dışında açık alanda meydan savaşı yapılması fikrini savundular. Peygamberimiz kendi fikrinde ısrar etmeyip ashabın çoğunluğunun kararına uydu.\n\nPeygamber Efendimiz'in (sav) bizzat kendi görüşünün aksine sahabilerin kararını uygulaması, onun hangi liderlik ve ahlaki özelliğini göstermektedir? Bu tutumun günümüz yöneticileri ve aile reisleri açısından önemini bir örnekle açıklayınız.",
+      "options": [],
+      "answer_text": "Peygamber Efendimiz'in bu davranışı onun 'istişareye (danışmaya)' ve 'ortak akla' verdiği değeri, demokratik ve kapsayıcı liderliğini gösterir. Kendi görüşü farklı olsa dahi toplumun ve çoğunluğun fikrine saygı duymuştur. Günümüzde bir aile reisi veya yönetici bir karar alırken tüm bireylerin görüşünü almalı, onların fikirlerine değer vermelidir; örneğin bir okul müdürünün veya bir babanın kararları tek başına dayatmak yerine ilgili kişilere danışarak alması bu ahlakın bir yansımasıdır.",
+      "rubric": [
+        {
+          "criterion": "İstişare / danışma / ortak akla önem verme kavramını doğru tespit etme",
+          "points": 5
+        },
+        {
+          "criterion": "Günümüzden mantıklı ve pedagojik bir örnekle (aile, okul veya yönetim) bağ kurarak açıklama yapma",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 2,
+      "points": 10,
+      "learning_outcome": "Uhud Savaşı'nda yaşanan gelişmelerden hareketle emirlere itaatin ve disiplinin önemini değerlendirir.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Değerlendirme",
+      "difficulty": "Kolay",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 21-26",
+      "source_context": "Peygamberimiz Uhud Savaşı'nda stratejik öneme sahip Ayneyn Tepesi'ne elli okçu yerleştirmiş ve 'Kuşların cesetlerimizi kapıştığını görseniz bile benden haber gelmedikçe yerinizi terk etmeyiniz.' buyurmuştur. Ancak savaşın kazanıldığı zannıyla tepe terk edilmiş ve durum tersine dönmüştür.",
+      "arabic_text": "",
+      "question_text": "Uhud Savaşı'nda Hz. Peygamber (sav), Ayneyn Tepesi'ndeki (Okçular Tepesi) okçulara kesin bir dille şu emri vermiştir: 'Kuşların bizi kapıştığını görseniz bile benden emir gelene kadar asla yerinizden ayrılmayın!'\n\nBuna rağmen okçuların büyük bir kısmının yerlerini terk etmesi savaşın seyrini nasıl etkilemiştir? Bu olaydan hareketle bireysel ve toplumsal hayatta 'verilen görev ve sorumluluklara sadakat' konusunda çıkarılması gereken en temel ders nedir?",
+      "answer_text": "Okçuların yerlerini terk etmesi üzerine Mekkeli süvariler (Halid bin Velid komutasında) arkadan dolanarak Müslümanlara saldırmış, Müslümanlar iki ateş arasında kalarak başta Hz. Hamza olmak üzere yetmiş şehit vermiş ve kazanılmak üzere olan zafer kaybedilmiştir. Çıkarılması gereken ders: Toplumsal başarılarda disiplin, lidere itaat ve görevi her ne pahasına olursa olsun terk etmemek hayati önem taşır; kişisel menfaat (ganimet) görevin önüne geçmemelidir.",
+      "rubric": [
+        {
+          "criterion": "Savaşın seyrinin değişmesini ve yaşanan kayıpları (iki ateş arasında kalınması / şehitler) doğru açıklama",
+          "points": 5
+        },
+        {
+          "criterion": "Görev bilinci, disiplin veya emre itaat dersini hayatla ilişkilendirerek ifade etme",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 3,
+      "points": 10,
+      "learning_outcome": "Bedir Savaşı sonrasında esirlere yapılan muamelenin İslam'ın eğitime bakışını nasıl yansıttığını yorumlar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Yorumlama",
+      "difficulty": "Kolay",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 41-46",
+      "source_context": "Bedir Savaşı sonrasında Peygamberimiz esirlerden fidye verebilecek durumda olanları fidye karşılığı, okuma yazma bilenleri ise on Müslüman çocuğa okuma yazma öğretmesi şartıyla serbest bırakmıştır.",
+      "arabic_text": "",
+      "question_text": "Bedir Savaşı'nda Müslümanların eline geçen esirlerle ilgili olarak Peygamberimiz (sav), okuma yazma bilen esirlerin her birinin on Medineli Müslüman çocuğa okuma yazma öğretmesi karşılığında serbest bırakılmasını kararlaştırmıştır.\n\nPeygamber Efendimiz'in düşman askeri olan esirleri bu şartla özgür bırakması, İslam dininin ve Hz. Peygamber'in 'ilim ve eğitim' anlayışı hakkında bizlere ne anlatmaktadır? Açıklayınız.",
+      "options": [],
+      "answer_text": "Bu uygulama, İslam'ın ve Hz. Peygamber'in ilim öğrenmeye ve eğitime ne kadar büyük bir kıymet verdiğini gösterir. Peygamberimiz savaş esirlerini cezalandırmak veya salt maddi fidye almak yerine toplumun okuryazarlık seviyesini yükseltmeyi tercih etmiştir. Bilginin kaynağı düşman dahi olsa ondan faydalanmanın önemini ve eğitimin her türlü maddi kazancın üstünde olduğunu ortaya koymuştur.",
+      "rubric": [
+        {
+          "criterion": "İslam'ın ve Peygamberimizin ilim/eğitime verdiği önceliği vurgulama",
+          "points": 5
+        },
+        {
+          "criterion": "Maddi menfaat veya intikam yerine eğitimin ve insani kazanımın tercih edildiğini belirtme",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 4,
+      "points": 10,
+      "learning_outcome": "Bedir Savaşı'nın sebeplerini ve Müslümanların Medine'deki siyasi varlığının kabul edilmesindeki rolünü açıklar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Analiz",
+      "difficulty": "Orta",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 16-21",
+      "source_context": "Mekkeli müşrikler hicret eden Müslümanların Mekke'de bıraktıkları malları yağmalamış ve kervanlarla satmaya çalışmıştır. Müslümanların haklarını aramak ve müşriklerin ekonomik baskısını kırmak amacıyla yapılan mücadele Bedir Zaferi ile neticelenmiştir.",
+      "arabic_text": "",
+      "question_text": "Müslümanlar ile Mekkeli müşrikler arasında gerçekleşen ilk büyük savaş olan Bedir Savaşı'nın ortaya çıkışında etkili olan ekonomik ve hukuki temel sebep nedir? Bu savaşın kazanılması Medine'deki İslam toplumu için ne tür bir sonuç doğurmuştur?",
+      "options": [],
+      "answer_text": "Temel sebep: Mekkeli müşriklerin Medine'ye hicret eden Müslümanların geride bıraktıkları ev ve mallarına haksızca el koyup bunları Şam ticaret kervanlarında satarak kazanç elde etmeye çalışmaları, Müslümanların da gasbedilen haklarını geri almak istemeleridir. Sonucu: Müslümanların Medine'deki varlığı ve siyasi gücü tescillenmiş, Arap Yarımadası'nda Müslümanlar ciddiye alınması gereken meşru ve güçlü bir taraf olarak kabul edilmiştir.",
+      "rubric": [
+        {
+          "criterion": "Müslümanların Mekke'de kalan mallarının gasbedilmesi ve ticaret kervanı meselesini doğru ifade etme",
+          "points": 5
+        },
+        {
+          "criterion": "Müslümanların siyasi/askeri bir güç olarak tanınması sonucunu belirtme",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 5,
+      "points": 10,
+      "learning_outcome": "Hendek Savaşı'nda Selman-ı Fârisî'nin önerisi üzerinden farklı tecrübelere ve stratejik istişareye açık olmanın önemini açıklar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Analiz",
+      "difficulty": "Orta",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 26-31",
+      "source_context": "Hendek Savaşı'nda Mekkeli müşrikler ve müttefik kabileler yaklaşık 10.000 kişilik bir orduyla Medine'ye yöneldiğinde, İran asıllı sahabi Selman-ı Farisi Arap geleneğinde olmayan hendek kazma fikrini teklif etmiş ve bu teklif kabul görmüştür.",
+      "arabic_text": "",
+      "question_text": "Hendek Savaşı öncesinde Mekkeliler diğer kabilelerle birleşerek çok kalabalık bir orduyla Medine'ye yürüdüğünde, İran kökenli bir sahabi olan Selman-ı Fârisî (ra), Arap Yarımadası'nda o zamana kadar bilinmeyen 'şehrin etrafına hendek kazma' savunma taktiğini teklif etmiştir.\n\nPeygamber Efendimiz'in Arap geleneğinde bulunmayan bu farklı fikri kabul etmesi, onun bilgiye, farklı kültürlerin faydalı tecrübelerine ve istişareye bakışı hakkında hangi ipuçlarını verir?",
+      "options": [],
+      "answer_text": "Hz. Peygamber taassup (bağnazlık) ve kabilecilik yapmamış, faydalı bilginin ve doğru stratejinin kimden veya hangi milletten geldiğine bakılmaksızın alınabileceğini göstermiştir. Bu durum onun 'Hikmet ve faydalı bilgi müminin yitiğidir, nerede bulursa alır' anlayışına sahip olduğunu ve ortak aklı en geniş çerçevede kullandığını ortaya koyar.",
+      "rubric": [
+        {
+          "criterion": "Faydalı bilginin kaynağına bakılmaksızın (kültür/millet ayrımı yapmadan) alınması ilkesini vurgulama",
+          "points": 5
+        },
+        {
+          "criterion": "Önyargısız yaklaşım ve açık fikirli istişare anlayışını temellendirme",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 6,
+      "points": 10,
+      "learning_outcome": "Hendek kazımı sürecinde Peygamber Efendimiz'in davranışlarından hareketle adil ve örnek liderlik modelini açıklar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Uygulama",
+      "difficulty": "Orta",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 36-41",
+      "source_context": "Hendek kazımı esnasında şiddetli soğuk ve açlık bulunmaktaydı. Hz. Peygamber sadece emir veren bir lider olmamış, ashabıyla birlikte kazma kürekle toprak taşımış, karnına açlıktan taş bağlamış ve zorlukları bizzat paylaşmıştır.",
+      "arabic_text": "",
+      "question_text": "Hendek Savaşı hazırlıkları sırasında Medine halkı soğuk hava ve açlık gibi büyük sıkıntılarla hendek kazıyordu. Hz. Muhammed (sav) bu zorlu süreçte kenara çekilip sadece emirler yağdırmamış; ashabıyla birlikte bizzat kürekle toprak kazmış, taş taşımış ve açlığı onlarla birlikte yaşamıştır.\n\nBir liderin zor anlarda halkıyla aynı külfeti paylaşması çalışanlar veya toplum üzerinde nasıl bir motivasyon ve birlik ruhu oluşturur? Açıklayınız.",
+      "options": [],
+      "answer_text": "Bir liderin zorluklara bizzat katlanması; toplumda lidere karşı sevgi, saygı ve güveni artırır. Çalışanların veya halkın 'Biz tek başımıza değiliz, liderimiz de bizimle aynı zorluğu çekiyor' düşüncesiyle motivasyonunu en üst düzeye çıkarır. Adalet duygusunu pekiştirir, fedakârlık ve dayanışma ruhunu güçlendirerek işlerin hızla ve inançla başarılmasını sağlar.",
+      "rubric": [
+        {
+          "criterion": "Liderin bizzat çalışmasının güven, sevgi ve motivasyon üzerindeki etkisini açıklama",
+          "points": 5
+        },
+        {
+          "criterion": "Adalet, eşitlik ve birlik-beraberlik bilincine katkısını belirtme",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 7,
+      "points": 10,
+      "learning_outcome": "Medine'de kurulan Ensar-Muhacir kardeşliği (muâhât) uygulamasını toplumsal dayanışma açısından değerlendirir.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Yorumlama",
+      "difficulty": "Kolay",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 41-46",
+      "source_context": "Hicret sonrası Medine'ye yerleşen muhacirlerin barınma ve geçim sorununu çözmek için Hz. Peygamber Ensar ile Muhacirleri kardeş ilan etmiş (muâhât), Medineliler evlerini ve tarlalarını göç eden kardeşleriyle paylaşmıştır.",
+      "arabic_text": "وَالَّذِينَ تَبَوَّؤُ الدَّارَ وَالْإِيمَانَ مِنْ قَبْلِهِمْ يُحِبُّونَ مَنْ هَاجَرَ إِلَيْهِمْ وَلَا يَجِدُونَ فِي صُدُورِهِمْ حَاجَةً مِمَّا أُوتُوا وَيُؤْثِرُونَ عَلَىٰ أَنْفُسِهِمْ وَلَوْ كَانَ بِهِمْ خَصَاصَةٌ",
+      "question_text": "Haşr suresi 9. ayette Medineli Müslümanlar (Ensar) hakkında şöyle buyrulmaktadır:\n\"Kendilerine göç edip gelenleri severler, onlara verilenlerden dolayı içlerinde bir rahatsızlık duymazlar, kendileri ihtiyaç içinde olsalar bile onları kendilerine tercih ederler...\"\n\nBu ayette övülen 'ensar ahlakı' ve Medine'deki kardeşlik (muâhât) uygulaması, günümüzde afet yaşayan veya zorunlu olarak göç etmek zorunda kalan insanlara yaklaşımımız konusunda bizlere hangi ahlaki sorumlulukları yüklemektedir? İki madde halinde yazınız.",
+      "options": [],
+      "answer_text": "1. İsar (kendisi ihtiyaç sahibi olsa bile başkasını tercih etme/cömertlik): Zor durumdaki depremzede, mülteci veya afetzede kardeşlerimize elimizdeki imkânları gönülden açmalı, paylaşmayı ibadet bilmeliyiz.\n2. Gönülden sahiplenme ve dayanışma: Onları yük olarak görmemeli; sevgi, kardeşlik ve hürmetle yaklaşıp topluma uyum sağlamalarına yardımcı olmalıyız.",
+      "rubric": [
+        {
+          "criterion": "Paylaşma/fedakârlık/isar ahlakını günümüz olaylarıyla bağdaştırma",
+          "points": 5
+        },
+        {
+          "criterion": "Zor durumdaki insanlara karşı empati ve kucaklayıcı yaklaşım sorumluluğunu belirtme",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 8,
+      "points": 10,
+      "learning_outcome": "Hz. Peygamber'in mücadelelerinde gözettiği savaş hukuku ve ahlakını değerlendirir.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Değerlendirme",
+      "difficulty": "Zor",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 21-26",
+      "source_context": "Peygamber Efendimiz savaşlarda orantısız güç kullanımını yasaklamış; kadınlara, çocuklara, yaşlılara, ibadethanelerdeki din adamlarına dokunulmamasını, ağaçların kesilmemesini ve ekinlerin yakılmamasını kesin olarak emretmiştir.",
+      "arabic_text": "",
+      "question_text": "Peygamber Efendimiz (sav), ordularını sefere gönderirken ashâbına şu talimatı verirdi: 'Aşırı gitmeyin, hıyanet etmeyin, çocukları, kadınları, manastırlara çekilmiş din adamlarını ve yaşlıları öldürmeyin. Ağaçları kesmeyin, ekinleri yakmayın!'\n\nBu ilkelerden hareketle, İslam'da savaşın amacı ve evrensel insan hakları/çevre bilinci açısından Peygamberimizin savaş ahlakını değerlendiriniz.",
+      "options": [],
+      "answer_text": "Peygamberimizin bu talimatları İslam'da savaşın bir saldırı, yağma veya intikam aracı değil; adaleti tesis etmek ve zulmü durdurmak amacıyla yapılan meşru bir savunma olduğunu gösterir. Savaşa dahil olmayan masum sivillerin can dokunulmazlığı güvence altına alınmış, ibadet özgürlüğü korunmuş ve doğanın tahrip edilmesi yasaklanarak günümüz savaş hukuku ve Cenevre sözleşmelerinden asırlar önce evrensel insan hakları ve çevre bilinci inşa edilmiştir.",
+      "rubric": [
+        {
+          "criterion": "Savaşın intikam değil, savunma ve adaleti koruma amaçlı olduğunu açıklama",
+          "points": 5
+        },
+        {
+          "criterion": "Sivillerin dokunulmazlığı, ibadet özgürlüğü ve çevre koruma boyutunu analiz etme",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 9,
+      "points": 10,
+      "learning_outcome": "Uhud Savaşı sonrasında Hz. Peygamber'in affedici ve bağışlayıcı tavrını ayet ışığında analiz eder.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Analiz",
+      "difficulty": "Zor",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 11-16",
+      "source_context": "Uhud Savaşı'nda sahabelerin bir kısmının hatası nedeniyle ağır kayıplar verilmesine rağmen, Peygamberimiz onları azarlamamış; Âl-i İmrân 159. ayette de onun bu yumuşak huyluluğu Allah tarafından övülmüştür.",
+      "arabic_text": "فَبِمَا رَحْمَةٍ مِنَ اللَّهِ لِنْتَ لَهُمْ ۖ وَلَوْ كُنْتَ فَظًّا غَلِيظَ الْقَلْبِ لَانْفَضُّوا مِنْ حَوْلِكَ",
+      "question_text": "Uhud Savaşı'nda okçuların emre uymaması ve yaşanan büyük panik yüzünden Müslümanlar ağır kayıplar vermiş, Hz. Peygamber dahi yaralanmıştır. Ancak savaş sonrasında Allah Teâlâ şöyle buyurmuştur:\n\"Allah'ın rahmeti sayesinde sen onlara yumuşak davrandın. Eğer kaba ve katı yürekli olsaydın, şüphesiz etrafından dağılıp giderlerdi. Artık onları affet, onlar için bağışlanma dile ve iş konusunda onlarla istişareye devam et...\" (Âl-i İmrân, 159)\n\nHz. Peygamber'in büyük bir kriz ve hatadan sonra sahabilerine karşı kaba davranmayıp onları affetmesi ve onlarla istişareye devam etmesi, toplumsal bütünlüğün korunması açısından neden önemlidir?",
+      "options": [],
+      "answer_text": "Büyük kriz dönemlerinde suçlayıcı, dışlayıcı ve sert bir dil kullanmak bireylerin küsmesine, pişmanlık duygusunun umutsuzluğa dönüşmesine ve toplumun dağılmasına yol açar. Hz. Peygamber'in affedici ve şefkatli tutumu, hata yapan sahabilerin hatalarını anlayıp topluma yeniden kazandırılmasını sağlamış; istişareye devam etmesi ise onlara duyduğu güveni göstererek toplumsal birlik ve aidiyet duygusunu perçinlemiştir.",
+      "rubric": [
+        {
+          "criterion": "Sertliğin ve dışlamanın toplumu dağıtacağı gerçeğini ayetle ilişkilendirme",
+          "points": 5
+        },
+        {
+          "criterion": "Affetmenin ve güven vermenin (istişareye devam) bireyi topluma yeniden kazandırma etkisini açıklama",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 10,
+      "points": 10,
+      "learning_outcome": "Bedir, Uhud ve Hendek mücadelelerindeki istişare örneklerinden hareketle ortak aklın önemine dair çıkarımlarda bulunur.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Uygulama",
+      "difficulty": "Zor",
+      "source_book": "7. Sınıf Peygamberimizin Hayatı Ders Kitabı",
+      "source_page": "Sayfa 21-31",
+      "source_context": "Peygamberimiz Bedir'de karargâhın kurulacağı su kuyuları konusunda Hubab bin Münzir'in, Uhud'da savaş meydanı konusunda genç sahabelerin, Hendek'te ise savunma stratejisi konusunda Selman-ı Farisi'nin görüşlerine göre hareket etmiştir.",
+      "arabic_text": "",
+      "question_text": "Peygamberimiz (sav);\n- Bedir'de ordu karargâhının kurulacağı yer konusunda Hubab bin Münzir'in tavsiyesini dinlemiş,\n- Uhud'da meydan savaşı yapılması konusunda genç sahabilerin talebini uygulamış,\n- Hendek'te şehrin savunulması için Selman-ı Fârisî'nin hendek kazma fikrini benimsemiştir.\n\nVahiy alan bir peygamber olmasına rağmen Hz. Muhammed'in (sav) bu şekilde davranmasından yola çıkarak, bir okulda yapılacak etkinlik veya proje çalışmalarında öğrencilerin 'istişare (danışma) ve ortak akıl' ilkesini nasıl uygulaması gerektiğini maddeler halinde belirtiniz.",
+      "options": [],
+      "answer_text": "1. Fikir Çeşitliliğine Açık Olmak: Proje veya etkinlik grubundaki herkesin fikrini rahatça ifade etmesine fırsat verilmeli, 'benim dediğim olsun' bencilliğinden uzak durulmalıdır.\n2. Liyakat ve Uzmanlığa Değer Vermek: Hubab veya Selman örneğinde olduğu gibi, o konuda en iyi fikre veya yeteneğe sahip arkadaşın önerisi öncelenmeli ve ortak karara saygı duyularak hep birlikte sorumluluk alınmalıdır.",
+      "rubric": [
+        {
+          "criterion": "Grup çalışmalarında tek seslilik yerine katılımcılık ve fikir özgürlüğü kuralını ifade etme",
+          "points": 5
+        },
+        {
+          "criterion": "Uzmanlık/iyi fikre saygı duyma ve alınan ortak karara uyma disiplinini belirtme",
+          "points": 5
+        }
+      ]
+    }
+  ]
+}

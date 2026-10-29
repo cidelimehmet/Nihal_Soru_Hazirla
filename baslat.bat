@@ -30,14 +30,11 @@ if errorlevel 1 (
 
 echo [3/3] Soru Hazirlama Sistemi Baslatiliyor...
 echo.
-echo Tarayiciniz aciliyor: http://localhost:8000
-echo (Programi kapatmak istediginizde bu siyah pencereyi kapatabilirsiniz)
+echo Sunucu calisiyor, sistem hazir oldugunda tarayiciniz otomatik acilacaktir...
+echo (Programi kapatmak istediginizde bu pencereyi kapatabilirsiniz)
 echo.
 
-:: Tarayicida ac
-start http://localhost:8000
-
-:: FastAPI sunucusunu baslat
+:: FastAPI sunucusunu baslat (sunucu hazir oldugu an tarayiciyi kendisi acar)
 python main.py
 
 echo.

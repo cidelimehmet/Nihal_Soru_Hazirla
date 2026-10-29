@@ -141,13 +141,14 @@ body {
 
 /* Sayfa Düzenleri: 2 Sütunlu MEB Düzeni */
 .exam-layout-2col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8mm;
-  position: relative;
-  flex: 1;
-  align-items: start; /* Soruların orantısız uzamasını engeller */
-  overflow: hidden;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8mm !important;
+  position: relative !important;
+  flex: 1 !important;
+  align-items: start !important; /* Sütunların ve soruların aşağı esnemesini %100 engeller */
+  align-content: start !important;
+  overflow: hidden !important;
 }
 
 .exam-layout-2col::before {
@@ -161,35 +162,37 @@ body {
 }
 
 .exam-layout-1col {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-  align-items: stretch;
-  overflow: hidden;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  flex: 1 !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
 }
 
-/* Sütun Taşıyıcıları - Asla soruları orantısız esnetmez */
+/* Sütun Taşıyıcıları - Sorular yukarıdan aşağıya eşit aralıkla dizilir, asla aşağı itilmez */
 .column-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  justify-content: flex-start;
-  align-content: flex-start;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  justify-content: flex-start !important;
+  align-content: flex-start !important;
+  align-items: stretch !important;
+  height: auto !important;
 }
 
-/* Soru Kartı - Dengeli ve Homojen Yapı */
+/* Soru Kartı - Dengeli, Sabit ve Homojen Yapı */
 .question-item {
-  position: relative;
-  padding: 4px 4px 6px 4px;
-  border-bottom: 1px solid #e2e8f0;
-  break-inside: avoid;
-  flex-grow: 0;   /* Son sorunun devasa esnemesini %100 engeller */
-  flex-shrink: 0;
+  position: relative !important;
+  padding: 4px 4px 8px 4px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  break-inside: avoid !important;
+  flex: 0 0 auto !important; /* Son sorunun devasa esnemesini ve uzamasını KESİNLİKLE ENGELLER */
+  height: auto !important;
 }
 
 .question-item:last-child {
-  border-bottom: none;
+  border-bottom: none !important;
 }
 
 .question-header {
@@ -253,23 +256,28 @@ body {
   color: #334155;
 }
 
-/* Cevap Çizgileri - Dengeli ve Estetik MEB Aralığı */
+/* Cevap Çizgileri - Her soruda BİREBİR EŞİT YÜKSEKLİK VE ARALIKTA */
 .answer-space {
-  margin-top: 4px;
-  margin-bottom: 2px;
+  margin-top: 4px !important;
+  margin-bottom: 2px !important;
+  height: auto !important;
+  flex: none !important;
 }
 
 .answer-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1px;
+  margin-bottom: 2px;
 }
 
 .answer-line {
-  border-bottom: 1px dotted #94a3b8;
-  height: 17px;
-  width: 100%;
+  border-bottom: 1.2px dotted #94a3b8 !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  width: 100% !important;
+  display: block !important;
 }
 
 /* Soru Aksiyon Butonları */
