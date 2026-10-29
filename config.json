@@ -1,0 +1,10 @@
+{
+  "gemini_api_key": "AQ.Ab8RN6L672VY3PLwYSy9CqCKbY2v957T8zDbjx0K2hf4QIwOFA",
+  "gemini_model": "gemini-3.8-flash",
+  "school_header": "T.C. MİLLÎ EĞİTİM BAKANLIĞI",
+  "school_name": "KOCAELİ / DARICA - Tevfik İleri İmam Hatip Ortaokulu",
+  "teacher_name": "Nihal YILDIZ",
+  "login_username": "nihal",
+  "login_password": "12345",
+  "port": 8000
+}

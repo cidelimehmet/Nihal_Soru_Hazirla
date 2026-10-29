@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tevfik İleri İHO - MEB 2026 OYSS Soru Hazırlama & Soru Bankası Sistemi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- ============================================================== -->
+  <!-- 1. GİRİŞ (LOGIN) EKRANI                                        -->
+  <!-- ============================================================== -->
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-4">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 border border-slate-200">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-900 mb-3 shadow-inner">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+        <h1 class="text-xl font-bold text-slate-900">Tevfik İleri İmam Hatip Ortaokulu</h1>
+        <p class="text-xs text-blue-800 font-semibold mt-1">MEB 2026 Soru Hazırlama & Soru Bankası Sistemi</p>
+      </div>
+
+      <div id="loginError" class="hidden mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg font-medium"></div>
+
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Kullanıcı Adı</label>
+          <input type="text" id="loginUsername" value="nihal" required
+                 class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Şifre</label>
+          <input type="password" id="loginPassword" value="12345" required
+                 class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none">
+        </div>
+        <button type="submit" 
+                class="w-full py-2.5 px-4 bg-blue-900 hover:bg-blue-800 text-white font-semibold text-sm rounded-lg shadow-md hover:shadow-lg transition">
+          Öğretmen Girişi Yap
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 2. ANA UYGULAMA EKRANI                                         -->
+  <!-- ============================================================== -->
+  <div id="mainAppScreen" class="hidden min-h-screen flex flex-col">
+
+    <!-- Üst Gezinme Çubuğu -->
+    <header class="bg-blue-950 text-white shadow-md z-30 no-print">
+      <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-lg bg-blue-800 flex items-center justify-center font-bold text-sm text-blue-200 shadow-sm">
+              Tİ
+            </div>
+            <div>
+              <h2 id="headerSchoolTitle" class="text-xs font-bold tracking-wide uppercase">Tevfik İleri İmam Hatip Ortaokulu</h2>
+              <p class="text-[10px] text-blue-200">MEB 2026 OYSS & Maarif Modeli</p>
+            </div>
+          </div>
+
+          <!-- Ana Navigasyon Sekmeleri (Sınav Hazırla vs. Soru Bankası) -->
+          <nav class="flex items-center space-x-1 ml-4 bg-blue-900/60 p-1 rounded-lg">
+            <button id="navExamMakerBtn" class="px-3 py-1 text-xs font-bold rounded bg-blue-600 text-white transition flex items-center gap-1.5 shadow-sm">
+              <span>📝</span> Sınav Hazırlama
+            </button>
+            <button id="navQuestionBankBtn" class="px-3 py-1 text-xs font-bold rounded text-blue-200 hover:text-white transition flex items-center gap-1.5">
+              <span>📚</span> Soru Bankası (Havuz)
+            </button>
+          </nav>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <span id="userGreeting" class="text-xs text-blue-100 font-medium">Hoş Geldiniz, Nihal Öğretmen</span>
+          <button id="btnOpenSettings" class="text-xs px-2.5 py-1 bg-blue-800 hover:bg-blue-700 rounded font-medium text-white transition flex items-center gap-1">
+            ⚙️ Ayarlar
+          </button>
+          <button id="logoutBtn" class="text-xs px-2.5 py-1 bg-red-800/80 hover:bg-red-700 rounded font-medium text-white transition">
+            Çıkış
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2.1. SINAV HAZIRLAMA GÖRÜNÜMÜ -->
+    <div id="viewExamMaker" class="flex-1 flex overflow-hidden">
+
+      <!-- SOL PANEL: Sınav Parametreleri & Ayarlar -->
+      <aside class="w-80 md:w-96 bg-white border-r border-slate-200 flex flex-col h-[calc(100vh-52px)] overflow-y-auto no-print z-20 shadow-sm">
+        <div class="p-3.5 border-b border-slate-100 bg-slate-50/70">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+            📋 Sınav ve Çalışma Sihirbazı
+          </h3>
+          <p class="text-[11px] text-slate-500 mt-0.5">Yazılı sınav veya etüt çalışması oluşturun.</p>
+        </div>
+
+        <form id="examSetupForm" class="p-3.5 space-y-3 flex-1" onsubmit="return false;">
+          
+          <!-- Sınav Türü Seçici (YENİ TALEP) -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Sınav / Çalışma Türü</label>
+            <select id="examTypeSelect" class="w-full text-xs py-2 px-2.5 bg-blue-50/80 border border-blue-300 rounded-md font-bold text-blue-950 focus:ring-2 focus:ring-blue-600">
+              <option value="yazili_sinav" selected>📄 MEB 2026 Ortak Yazılı Sınavı (Açık Uçlu)</option>
+              <option value="etut_calisma">📝 Öğrenci Çalışma & Etüt Kağıdı</option>
+              <option value="yaprak_test">🎯 Çoktan Seçmeli Yaprak Test (A, B, C, D)</option>
+            </select>
+          </div>
+
+          <!-- Ders Seçimi -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Ders</label>
+            <select id="examSubject" class="w-full text-xs py-2 px-2.5 bg-slate-50 border border-slate-300 rounded-md font-medium text-slate-800 focus:ring-2 focus:ring-blue-600">
+            </select>
+          </div>
+
+          <!-- Sınıf / Kademe & Dönem -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Sınıf</label>
+              <select id="examGrade" class="w-full text-xs py-2 px-2.5 bg-slate-50 border border-slate-300 rounded-md font-medium text-slate-800 focus:ring-2 focus:ring-blue-600">
+                <option value="5" selected>5. Sınıf</option>
+                <option value="6">6. Sınıf</option>
+                <option value="7">7. Sınıf</option>
+                <option value="8">8. Sınıf (LGS)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Dönem</label>
+              <select id="examTerm" class="w-full text-xs py-2 px-2.5 bg-slate-50 border border-slate-300 rounded-md font-medium text-slate-800 focus:ring-2 focus:ring-blue-600">
+                <option value="1. Dönem" selected>1. Dönem</option>
+                <option value="2. Dönem">2. Dönem</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Sınav No & Senaryo -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Sınav No</label>
+              <select id="examNo" class="w-full text-xs py-2 px-2.5 bg-slate-50 border border-slate-300 rounded-md font-medium text-slate-800 focus:ring-2 focus:ring-blue-600">
+                <option value="1. Yazılı" selected>1. Yazılı</option>
+                <option value="2. Yazılı">2. Yazılı</option>
+                <option value="Mazeret Sınavı">Mazeret Sınavı</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">MEB Senaryosu</label>
+              <select id="examScenario" class="w-full text-xs py-2 px-2.5 bg-slate-50 border border-slate-300 rounded-md font-medium text-slate-800 focus:ring-2 focus:ring-blue-600">
+                <option value="Senaryo 1" selected>Senaryo 1 (6 Soru)</option>
+                <option value="Senaryo 2">Senaryo 2 (8 Soru)</option>
+                <option value="Özel">Özel Soru Sayısı</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Soru Sayısı & Zorluk -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Soru Adedi</label>
+              <input type="number" id="examQuestionCount" value="6" min="1" max="20"
+                     class="w-full text-xs py-1.5 px-2.5 bg-slate-50 border border-slate-300 rounded-md font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Güçlük Dağılımı</label>
+              <select id="examDifficulty" class="w-full text-xs py-2 px-2.5 bg-slate-50 border border-slate-300 rounded-md font-medium text-slate-800 focus:ring-2 focus:ring-blue-600">
+                <option value="Dengeli" selected>Dengeli (MEB Standart)</option>
+                <option value="Kolay">Kolay Seviye</option>
+                <option value="Orta">Orta Seviye</option>
+                <option value="Zor">Zor (LGS İleri)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- İlgili Üniteler -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-semibold text-slate-700">Ders Kitabı Üniteleri</label>
+              <span class="text-[10px] text-blue-600 font-medium">Sayfalarla Eşleşir</span>
+            </div>
+            <div id="unitsContainer" class="max-h-32 overflow-y-auto border border-slate-200 rounded-md p-1.5 bg-slate-50 space-y-1">
+            </div>
+          </div>
+
+          <!-- Sınav Hazırla Butonu -->
+          <button type="button" id="btnGenerateExam"
+                  class="w-full py-2.5 px-4 bg-gradient-to-r from-blue-900 to-indigo-900 hover:from-blue-800 hover:to-indigo-800 text-white font-bold text-xs rounded-lg shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
+            <span>✨</span> Sınavı Hazırla (Kitap Analizli)
+          </button>
+        </form>
+
+        <!-- Kayıtlı Sınavlar Arşivi -->
+        <div class="p-3 border-t border-slate-200 bg-slate-50">
+          <h4 class="text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+            <span>📂 Kayıtlı Sınavlarım</span>
+            <span class="text-[10px] text-slate-400 font-normal">Arşiv</span>
+          </h4>
+          <div id="savedExamsList" class="max-h-36 overflow-y-auto space-y-1">
+          </div>
+        </div>
+      </aside>
+
+      <!-- SAĞ / ORTA ALAN: A4 Sınav Kağıdı Önizleme & Editör -->
+      <main class="flex-1 flex flex-col h-[calc(100vh-52px)] overflow-hidden bg-slate-200/90">
+        
+        <!-- Üst İşlem ve Sekme Araç Çubuğu -->
+        <div class="bg-white border-b border-slate-200 px-5 py-2 flex items-center justify-between no-print z-10 shadow-sm flex-wrap gap-2">
+          
+          <!-- Sol: 3 Ana Sekme (Öğrenci Kağıdı, Cevap Anahtarı, Kitap Doğrulama) -->
+          <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-lg">
+            <button id="tabExamBtn" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-600 text-white shadow transition flex items-center gap-1.5">
+              <span>📄</span> Öğrenci Kağıdı
+            </button>
+            <button id="tabAnswerBtn" class="px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-blue-600 transition flex items-center gap-1.5">
+              <span>🔑</span> Cevap Anahtarı & Rubrik
+            </button>
+            <button id="tabSourceBtn" class="px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-blue-600 transition flex items-center gap-1.5" title="Kitap ilişkisi, sayfa ve bilişsel doğrulama">
+              <span>📖</span> Kitap Doğrulama
+            </button>
+          </div>
+
+          <!-- Orta: Düzen & Soru Ekleme -->
+          <div class="flex items-center space-x-2">
+            <span class="text-xs text-slate-500 font-medium">Düzen:</span>
+            <button id="btnLayout2Col" class="px-2.5 py-1 text-xs font-semibold rounded bg-blue-600 text-white shadow" title="MEB 2 Sütunlu Sayfa Düzeni">
+              2 Sütun
+            </button>
+            <button id="btnLayout1Col" class="px-2.5 py-1 text-xs font-semibold rounded bg-slate-200 text-slate-700 hover:bg-slate-300" title="Tek Sütunlu Düzen">
+              Tek Sütun
+            </button>
+            <div class="h-4 w-px bg-slate-300 mx-0.5"></div>
+            <button id="btnAddQuestion" class="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-600 hover:bg-emerald-700 text-white shadow transition flex items-center gap-1">
+              <span>➕</span> Soru Ekle
+            </button>
+          </div>
+
+          <!-- Sağ: Çıktı ve Kaydetme Butonları -->
+          <div class="flex items-center space-x-2">
+            <div class="flex items-center gap-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-xs font-bold text-amber-900" title="Toplam Sınav Puanı">
+              <span>Toplam:</span>
+              <span id="topTotalPointsBadge">100 P</span>
+            </div>
+            <button id="btnSaveExam" class="px-2.5 py-1 text-xs font-semibold rounded bg-slate-800 hover:bg-slate-700 text-white shadow transition" title="Veritabanına Kaydet">
+              💾 Kaydet
+            </button>
+            <button id="btnPrintPdf" class="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-600 hover:bg-indigo-700 text-white shadow transition" title="A4 Olarak Yazdır / PDF İndir">
+              🖨️ Yazdır / PDF
+            </button>
+            <button id="btnExportDocx" class="px-2.5 py-1 text-xs font-semibold rounded bg-blue-700 hover:bg-blue-800 text-white shadow transition flex items-center gap-1" title="Düzenlenebilir Word (.docx) İndir">
+              <span>📥</span> Word
+            </button>
+            <button id="btnExportAnswerDocx" class="px-2 py-1 text-xs font-semibold rounded bg-teal-700 hover:bg-teal-800 text-white shadow transition" title="Cevap Anahtarı Word İndir">
+              Rubrik Word
+            </button>
+            <button id="btnExportSourceDocx" class="px-2 py-1 text-xs font-semibold rounded bg-amber-700 hover:bg-amber-800 text-white shadow transition" title="Kitap Doğrulama Raporu Word İndir">
+              Doğrulama Word
+            </button>
+          </div>
+        </div>
+
+        <!-- A4 Sayfaları Kaydırma Taşıyıcısı (Otomatik Çoklu A4 Sayfalama) -->
+        <div class="flex-1 overflow-y-auto a4-page-container" id="sheetsScrollArea">
+
+          <!-- 1. SEKME: ÖĞRENCİ SINAV KAĞITLARI (Sayfa 1, Sayfa 2 vb. Dinamik A4 Listesi) -->
+          <div id="examPagesContainer" class="flex flex-col items-center gap-6 w-full">
+            <!-- JS paginateExam() motoru buraya 1. Kağıt, 2. Kağıt vb. bağımsız .a4-sheet divleri üretecektir -->
+          </div>
+
+          <!-- 2. SEKME: CEVAP ANAHTARI & DERECELİ PUANLAMA RUBRİĞİ -->
+          <div id="answerSheetContainer" class="hidden a4-sheet" style="height: auto; min-height: var(--a4-height);">
+            <div id="answerKeyContent" class="flex-1">
+            </div>
+            <div class="exam-footer">
+              <span>Tevfik İleri İmam Hatip Ortaokulu • 2026 OYSS Puanlama Anahtarı</span>
+            </div>
+          </div>
+
+          <!-- 3. SEKME: KİTAP İLİŞKİSİ VE PEDAGOJİK DOĞRULAMA (YENİ TALEP) -->
+          <div id="sourceVerificationContainer" class="hidden a4-sheet" style="height: auto; min-height: var(--a4-height);">
+            <div id="sourceVerificationContent" class="flex-1">
+            </div>
+            <div class="exam-footer">
+              <span>Tevfik İleri İmam Hatip Ortaokulu • 2026 Müfredat & Kitap Doğrulama Raporu</span>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- 2.2. SORU BANKASI VE HAVUZ YÖNETİMİ GÖRÜNÜMÜ (YENİ TALEP) -->
+    <div id="viewQuestionBank" class="hidden flex-1 flex flex-col bg-slate-50 h-[calc(100vh-52px)] overflow-hidden">
+      
+      <!-- Soru Bankası Üst Filtre Çubuğu -->
+      <div class="bg-white border-b border-slate-200 px-6 py-3 shadow-sm flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-3">
+          <h3 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+            <span>📚</span> Soru Bankası ve Havuz Yönetimi
+          </h3>
+          <span id="bankTotalCountBadge" class="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded-full">
+            0 Soru
+          </span>
+        </div>
+
+        <!-- Filtreler -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <select id="bankFilterSubject" class="text-xs py-1.5 px-2 bg-slate-50 border border-slate-300 rounded font-medium">
+            <option value="">Tüm Dersler</option>
+            <option value="dkab">Din Kültürü</option>
+            <option value="kuran">Kur'an-ı Kerim</option>
+            <option value="siyer">Peygamberimizin Hayatı</option>
+          </select>
+          <select id="bankFilterGrade" class="text-xs py-1.5 px-2 bg-slate-50 border border-slate-300 rounded font-medium">
+            <option value="">Tüm Sınıflar</option>
+            <option value="5">5. Sınıf</option>
+            <option value="6">6. Sınıf</option>
+            <option value="7">7. Sınıf</option>
+            <option value="8">8. Sınıf</option>
+          </select>
+          <select id="bankFilterDifficulty" class="text-xs py-1.5 px-2 bg-slate-50 border border-slate-300 rounded font-medium">
+            <option value="">Tüm Güçlükler</option>
+            <option value="Kolay">Kolay</option>
+            <option value="Orta">Orta</option>
+            <option value="Zor">Zor</option>
+          </select>
+          <input type="text" id="bankSearchInput" placeholder="Soru metni veya kazanım ara..." 
+                 class="text-xs py-1.5 px-2.5 bg-slate-50 border border-slate-300 rounded w-48 focus:ring-2 focus:ring-blue-600">
+          
+          <button id="btnOpenGenerateToBankModal" class="px-3 py-1.5 text-xs font-bold rounded bg-indigo-700 hover:bg-indigo-800 text-white shadow flex items-center gap-1">
+            <span>✨</span> Kitaptan Soru Üret & Biriktir
+          </button>
+        </div>
+      </div>
+
+      <!-- Soru Bankası Kartlar Listesi -->
+      <div class="flex-1 overflow-y-auto p-6">
+        <div id="bankCardsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-7xl mx-auto">
+          <!-- JS ile doldurulacak -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 3. POPUP MODALLAR                                             -->
+  <!-- ============================================================== -->
+  
+  <!-- 3.1. Hangi Sınavlarda Kullanıldı Detay Modalı (YENİ TALEP) -->
+  <div id="usageDetailModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-5 border border-slate-200">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100 mb-3">
+        <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+          <span>📌</span> Sorunun Kullanıldığı Sınavlar
+        </h4>
+        <button onclick="closeUsageModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+      </div>
+      <div id="usageModalContent" class="space-y-2 max-h-60 overflow-y-auto text-xs text-slate-700">
+      </div>
+      <div class="mt-4 pt-2 border-t border-slate-100 flex justify-end">
+        <button onclick="closeUsageModal()" class="px-3 py-1.5 text-xs font-semibold rounded bg-slate-100 text-slate-700 hover:bg-slate-200">
+          Kapat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.2. Soru Bankasına Kitaptan Soru Üretme Modalı -->
+  <div id="generateToBankModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 border border-slate-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+          <span>✨</span> Kitaptan Soru Bankasına Soru Biriktir
+        </h3>
+        <button onclick="closeGenerateToBankModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+      </div>
+      <form id="generateToBankForm" class="space-y-3">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Ders</label>
+            <select id="bankGenSubject" class="w-full text-xs p-2 border border-slate-300 rounded">
+              <option value="dkab">Din Kültürü ve Ahlak Bilgisi</option>
+              <option value="kuran">Kur'an-ı Kerim</option>
+              <option value="siyer">Peygamberimizin Hayatı</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Sınıf</label>
+            <select id="bankGenGrade" class="w-full text-xs p-2 border border-slate-300 rounded">
+              <option value="5">5. Sınıf</option>
+              <option value="6">6. Sınıf</option>
+              <option value="7">7. Sınıf</option>
+              <option value="8">8. Sınıf</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Üretilecek Soru Adedi</label>
+            <input type="number" id="bankGenCount" value="5" min="1" max="15" class="w-full text-xs p-2 border border-slate-300 rounded">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Soru Türü</label>
+            <select id="bankGenType" class="w-full text-xs p-2 border border-slate-300 rounded">
+              <option value="acik_uclu">Açık Uçlu (MEB OYSS)</option>
+              <option value="coktan_secmeli">Çoktan Seçmeli (Test)</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeGenerateToBankModal()" class="px-4 py-2 text-xs font-semibold rounded bg-slate-100 text-slate-700">İptal</button>
+          <button type="submit" class="px-4 py-2 text-xs font-semibold rounded bg-indigo-700 text-white hover:bg-indigo-800 shadow">Soruları Üret ve Havuza Ekle</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3.3. Ayarlar Modalı -->
+  <div id="settingsModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 border border-slate-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+          <span>⚙️</span> Sistem ve Okul Ayarları
+        </h3>
+        <button id="btnCloseSettings" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+      </div>
+
+      <form id="settingsForm" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Üst Başlık (Bakanlık)</label>
+          <input type="text" id="settingsSchoolHeader" class="w-full text-xs p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-600">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Okul Adı</label>
+          <input type="text" id="settingsSchoolName" class="w-full text-xs p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-600">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Öğretmen Adı</label>
+          <input type="text" id="settingsTeacherName" class="w-full text-xs p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-600">
+        </div>
+        <div class="pt-2 border-t border-slate-100">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Google Gemini API Anahtarı</label>
+          <input type="password" id="settingsGeminiApiKey" placeholder="AIzaSy..." 
+                 class="w-full text-xs p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-600 font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Gemini Modeli</label>
+          <input type="text" id="settingsGeminiModel" value="gemini-2.5-flash" class="w-full text-xs p-2 border border-slate-300 rounded font-mono">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 text-xs font-semibold rounded bg-slate-100 text-slate-700 hover:bg-slate-200">
+            İptal
+          </button>
+          <button type="submit" class="px-4 py-2 text-xs font-semibold rounded bg-blue-900 text-white hover:bg-blue-800 shadow">
+            Ayarları Kaydet
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- YÜKLENİYOR OVERLAY -->
+  <div id="loadingOverlay" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center max-w-xs text-center border border-slate-100">
+      <div class="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin mb-3"></div>
+      <p id="loadingText" class="text-xs font-bold text-slate-800">MEB Ders Kitabı Taranıyor ve Sorular Hazırlanıyor...</p>
+      <p class="text-[10px] text-slate-400 mt-1">Türkiye Yüzyılı Maarif Modeli standartları uygulanıyor.</p>
+    </div>
+  </div>
+
+  <!-- BİLDİRİM TOAST -->
+  <div id="toastNotification" class="hidden fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-lg shadow-lg text-xs font-semibold text-white transition-all transform duration-300">
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

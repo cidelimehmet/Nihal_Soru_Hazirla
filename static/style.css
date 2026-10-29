@@ -1,0 +1,389 @@
+/* Tevfik İleri İHO Soru Hazırlama & Soru Bankası Sistemi Stilleri */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap');
+
+:root {
+  --primary: #1e3a8a;
+  --secondary: #0d9488;
+  --accent: #d97706;
+  --a4-width: 210mm;
+  --a4-height: 297mm;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  min-height: 100vh;
+}
+
+/* Arapça Font Stili */
+.arabic-text {
+  font-family: 'Amiri', 'Traditional Arabic', serif;
+  direction: rtl;
+  font-size: 1.35rem;
+  line-height: 2.1rem;
+  text-align: center;
+  color: #0f172a;
+  padding: 4px 10px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px dashed #cbd5e1;
+  margin: 6px 0;
+}
+
+/* A4 Sayfa Simülatörü ve Taşıyıcı */
+.a4-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0 80px 0;
+  background-color: #64748b;
+  min-height: 100%;
+  gap: 24px;
+}
+
+/* Tek Bir A4 Kağıdı (Tam 210mm x 297mm) */
+.a4-sheet {
+  width: var(--a4-width);
+  height: var(--a4-height);
+  max-height: var(--a4-height);
+  padding: 10mm 12mm 8mm 12mm;
+  background: #ffffff;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Kağıt dışına ASLA taşmaz! */
+}
+
+/* MEB Başlık Antetleri */
+.meb-header {
+  text-align: center;
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.meb-header-continuation {
+  text-align: center;
+  border-bottom: 1.5px solid #64748b;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.meb-header h3 {
+  font-size: 10.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #0f172a;
+}
+
+.meb-header h4 {
+  font-size: 10pt;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.meb-header .exam-sub {
+  font-size: 9.5pt;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Öğrenci Bilgi Tablosu */
+.student-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+  font-size: 8.5pt;
+  flex-shrink: 0;
+}
+
+.student-info-table td {
+  border: 1px solid #64748b;
+  padding: 3px 6px;
+  vertical-align: middle;
+}
+
+.student-info-table .label {
+  font-weight: 700;
+  background-color: #f8fafc;
+  width: 14%;
+}
+
+.student-info-table .val {
+  width: 36%;
+}
+
+.student-info-table .score-box {
+  background-color: #f1f5f9;
+  text-align: center;
+  font-weight: 700;
+  font-size: 9.5pt;
+  color: #1e3a8a;
+}
+
+/* Sayfa Düzenleri: 2 Sütunlu MEB Düzeni */
+.exam-layout-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8mm;
+  position: relative;
+  flex: 1;
+  align-items: start; /* Soruların orantısız uzamasını engeller */
+  overflow: hidden;
+}
+
+.exam-layout-2col::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 0.5px);
+  width: 1px;
+  border-left: 1px dashed #cbd5e1;
+}
+
+.exam-layout-1col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+/* Sütun Taşıyıcıları - Asla soruları orantısız esnetmez */
+.column-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: flex-start;
+  align-content: flex-start;
+}
+
+/* Soru Kartı - Dengeli ve Homojen Yapı */
+.question-item {
+  position: relative;
+  padding: 4px 4px 6px 4px;
+  border-bottom: 1px solid #e2e8f0;
+  break-inside: avoid;
+  flex-grow: 0;   /* Son sorunun devasa esnemesini %100 engeller */
+  flex-shrink: 0;
+}
+
+.question-item:last-child {
+  border-bottom: none;
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.question-badge {
+  font-weight: 700;
+  font-size: 8.5pt;
+  color: #0f172a;
+}
+
+.question-points-input {
+  width: 42px;
+  padding: 1px 2px;
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #1e3a8a;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  text-align: center;
+  background: #f8fafc;
+}
+
+.question-text-editable {
+  font-size: 8.5pt;
+  line-height: 1.35;
+  color: #1e293b;
+  outline: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.question-text-editable:hover {
+  background: #f8fafc;
+}
+
+.question-text-editable:focus {
+  background: #f1f5f9;
+  box-shadow: 0 0 0 1.5px #3b82f6;
+}
+
+.outcome-tag {
+  font-size: 7pt;
+  color: #64748b;
+  font-style: italic;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Çoktan Seçmeli Şıklar */
+.options-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 8pt;
+  color: #334155;
+}
+
+/* Cevap Çizgileri - Dengeli ve Estetik MEB Aralığı */
+.answer-space {
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+.answer-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1px;
+}
+
+.answer-line {
+  border-bottom: 1px dotted #94a3b8;
+  height: 17px;
+  width: 100%;
+}
+
+/* Soru Aksiyon Butonları */
+.q-actions {
+  display: flex;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.question-item:hover .q-actions {
+  opacity: 1;
+}
+
+.q-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 7.5pt;
+  cursor: pointer;
+  color: #475569;
+}
+
+.q-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.q-btn.delete:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Kağıt Alt Bilgisi (Sayfa Numarası ve Başarı Dileği) */
+.exam-footer {
+  text-align: center;
+  font-size: 7.5pt;
+  color: #64748b;
+  font-style: italic;
+  margin-top: auto;
+  padding-top: 4px;
+  border-top: 1px solid #cbd5e1;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Soru Bankası Rozetleri */
+.badge-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ============================================================== */
+/* YAZDIRMA (PRINT A4) MOTORU - TAM 1:1 SAYFALAMA                 */
+/* ============================================================== */
+@page {
+  size: A4 portrait;
+  margin: 8mm 10mm 8mm 10mm;
+}
+
+@media print {
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    overflow: visible !important;
+    width: 100% !important;
+  }
+  
+  /* Tüm arayüz elemanlarını gizle */
+  header, aside, .no-print, .q-actions, .modal-backdrop, #toastNotification, #loadingOverlay {
+    display: none !important;
+  }
+
+  /* Ana kaydırma alanını serbest bırak */
+  .a4-page-container {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Her A4 kağıdı tam bir sayfaya basılır ve arkasından sayfa sonu atılır */
+  .a4-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 0 0 0 !important;
+    padding: 0 0 0 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    max-height: none !important;
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .question-points-input {
+    border: none !important;
+    background: transparent !important;
+  }
+
+  .question-text-editable {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+}
