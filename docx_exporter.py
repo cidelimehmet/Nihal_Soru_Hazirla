@@ -100,7 +100,11 @@ def generate_exam_docx(exam_data: dict, layout: str = "2_column") -> Path:
         layout = "1_column"
 
     if is_bep:
-        sub_heading = f"{to_turkish_upper(term)} {to_turkish_upper(exam_no)} — BEP KAPSAMINDAKİ ÖĞRENCİ SINAVI"
+        show_bep_hdr = bep_opts.get("show_bep_header", True)
+        if show_bep_hdr:
+            sub_heading = f"{to_turkish_upper(term)} {to_turkish_upper(exam_no)} — BEP KAPSAMINDAKİ ÖĞRENCİ SINAVI"
+        else:
+            sub_heading = f"{to_turkish_upper(term)} {to_turkish_upper(exam_no)} SINAVI"
     elif exam_type == "etut_calisma":
         sub_heading = "ÇALIŞMA VE ETÜT KAĞIDI"
     elif exam_type == "yaprak_test":

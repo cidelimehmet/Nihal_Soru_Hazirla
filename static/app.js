@@ -24,6 +24,7 @@ const state = {
   },
   showAnswerLines: true, // Noktalı cevap çizgilerini göster/gizle
   showScenarioInHeader: true, // Başlıkta senaryo adı ve konu detayını göster/gizle
+  showBepInHeader: true, // BEP sınavlarında başlıkta BEP ibaresini göster/gizle
   activeTab: "exam", // "exam", "answer_key", "source_verification"
   currentView: "exam_maker", // "exam_maker", "exam_archive", "question_bank"
   savedExams: [],
@@ -43,6 +44,7 @@ const state = {
     font_size: "13pt", // "13pt" (12-14pt Standart BEP) veya "16pt" (Disleksi / Görme Güçlüğü)
     question_style: "karma", // "karma", "coktan_secmeli_3", "eslestirme_dy_bosluk"
     accommodation: "ek_sure", // "ek_sure" veya "okuyucu_kodlayici"
+    show_bep_header: true,
     custom_outcomes: ""
   },
   isLoading: false
@@ -74,6 +76,20 @@ function syncHeaderOptionsUI() {
   if (chkAns) chkAns.checked = (state.showAnswerLines !== false);
   const chkScen = document.getElementById("chkShowScenarioInHeader");
   if (chkScen) chkScen.checked = (state.showScenarioInHeader !== false);
+  const chkBep = document.getElementById("chkShowBepInHeader");
+  if (chkBep) chkBep.checked = (state.showBepInHeader !== false);
+
+  const currentType = document.getElementById("examTypeSelect")?.value || state.currentExam?.exam_type || "yazili_sinav";
+  const isBep = (currentType === "bep_sinav");
+
+  const bepWrapper = document.getElementById("bepHeaderCheckboxWrapper");
+  if (bepWrapper) {
+    bepWrapper.classList.toggle("hidden", !isBep);
+  }
+  const scenWrapper = document.getElementById("scenarioHeaderCheckboxWrapper");
+  if (scenWrapper) {
+    scenWrapper.classList.toggle("hidden", isBep);
+  }
 }
 
 // --- BAŞLANGIÇ ---
@@ -519,11 +535,13 @@ function onExamTypeChange() {
 
     renderBepSummaryBox();
     updatePaperHeaderLive();
+    syncHeaderOptionsUI();
     renderExamPages();
     showToast("♿ BEP Sınav Modu aktif edildi: Tek sütun, 12-14/16 punto okunaklı yazı tipi, 5 soru (5x20p) ve sadeleştirilmiş soru tipleri ayarlandı.", "info");
   } else {
     populateScenarioDropdown();
     updatePaperHeaderLive();
+    syncHeaderOptionsUI();
     renderExamPages();
   }
 }
@@ -952,6 +970,7 @@ function renderExamPages(forcedPageCount = null) {
 
   const exam = state.currentExam;
   const questions = exam.questions || [];
+  syncHeaderOptionsUI();
 
   if (questions.length === 0) {
     container.innerHTML = `
@@ -971,6 +990,8 @@ function renderExamPages(forcedPageCount = null) {
   const isBep = (exam.exam_type === "bep_sinav");
   const bepOpts = exam.bep_options || state.bepOptions || {};
   const isLargeBepFont = (isBep && bepOpts.font_size === "16pt");
+  const showBepBanner = (isBep && state.showBepInHeader !== false && bepOpts.show_bep_header !== false);
+  syncHeaderOptionsUI();
 
   // Kullanıcının "Tek Sütun" / "2 Sütun" tercihine saygı duy (BEP seçildiğinde varsayılan 1_column olarak gelir,
   // ancak öğretmen 2 Sütun'a tıklarsa 2 sütunlu dengeli yerleşim de çalışır)
@@ -1030,7 +1051,7 @@ function renderExamPages(forcedPageCount = null) {
         : exam.exam_type === "yaprak_test" ? "KAZANIM DEĞERLENDİRME TESTİ" 
         : `${toTurkishUpper(exam.term || "1. Dönem")} ${toTurkishUpper(exam.exam_no || "1. Yazılı")} SINAVI${scenarioPart}`;
 
-      const bepBannerHtml = isBep
+      const bepBannerHtml = showBepBanner
         ? `<div class="bep-official-banner">♿ BEP KAPSAMINDAKİ ÖĞRENCİ SINAVI (BİREYSELLEŞTİRİLMİŞ EĞİTİM PROGRAMI)</div>`
         : "";
 
@@ -1068,7 +1089,7 @@ function renderExamPages(forcedPageCount = null) {
       headerHtml = `
         <div class="meb-header-continuation">
           <span>${toTurkishUpper(state.config.school_name || "Tevfik İleri İmam Hatip Ortaokulu")}</span>
-          <span>${exam.grade}. Sınıf ${toTurkishUpper(exam.subject_name || "Ders")} ${isBep ? "• BEP SINAVI" : ""} • (Sayfa ${pageIdx + 1} / ${actualTotalPages})</span>
+          <span>${exam.grade}. Sınıf ${toTurkishUpper(exam.subject_name || "Ders")} ${showBepBanner ? "• BEP SINAVI" : ""} • (Sayfa ${pageIdx + 1} / ${actualTotalPages})</span>
         </div>
       `;
     }
@@ -2062,6 +2083,9 @@ async function loadExamById(id) {
     }
     if (loaded.bep_options) {
       state.bepOptions = { ...state.bepOptions, ...loaded.bep_options };
+      if (loaded.bep_options.show_bep_header !== undefined) {
+        state.showBepInHeader = loaded.bep_options.show_bep_header;
+      }
     }
     syncHeaderOptionsUI();
 
@@ -3664,6 +3688,25 @@ function setupEventListeners() {
       state.showScenarioInHeader = e.target.checked;
       if (state.currentExam) {
         state.currentExam.show_scenario_in_header = state.showScenarioInHeader;
+      }
+      renderExamPages();
+    });
+  }
+
+  // Başlıkta BEP Sınavı İbaresi Aç/Kapa (Sadece BEP sınavlarında görünür)
+  const chkBepHeader = document.getElementById("chkShowBepInHeader");
+  if (chkBepHeader) {
+    chkBepHeader.checked = (state.showBepInHeader !== false);
+    chkBepHeader.addEventListener("change", (e) => {
+      state.showBepInHeader = e.target.checked;
+      if (!state.bepOptions) state.bepOptions = {};
+      state.bepOptions.show_bep_header = state.showBepInHeader;
+      if (state.currentExam) {
+        state.currentExam.bep_options = {
+          ...(state.currentExam.bep_options || {}),
+          ...state.bepOptions,
+          show_bep_header: state.showBepInHeader
+        };
       }
       renderExamPages();
     });

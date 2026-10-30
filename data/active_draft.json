@@ -8,14 +8,15 @@
   "term": "1. Dönem",
   "exam_no": "Mazeret Sınavı",
   "scenario": "BEP Bireysel Kazanım",
-  "layout": "2_column",
+  "layout": "1_column",
   "show_answer_lines": true,
   "show_scenario_in_header": true,
   "bep_options": {
     "font_size": "13pt",
     "question_style": "karma",
     "accommodation": "ek_sure",
-    "custom_outcomes": ""
+    "custom_outcomes": "",
+    "show_bep_header": false
   },
   "total_points": 100,
   "questions": [

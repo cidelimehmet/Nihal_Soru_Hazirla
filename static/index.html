@@ -274,17 +274,26 @@
               Tek Sütun
             </button>
             <div class="h-4 w-px bg-slate-300 mx-0.5"></div>
-            <!-- Görünüm & Başlık Seçenekleri (Çizgiler ve Senaryo Yazımı) -->
+            <!-- Görünüm & Başlık Seçenekleri (Çizgiler, Senaryo Yazımı ve BEP İbaresi) -->
             <div class="flex items-center gap-2 bg-slate-100/90 px-2 py-1 rounded-md border border-slate-200">
               <label class="flex items-center gap-1.5 text-xs font-semibold text-slate-700 cursor-pointer select-none" title="Cevap alanında noktalı çizgilerin (...) gösterilip gösterilmeyeceğini belirler">
                 <input type="checkbox" id="chkShowAnswerLines" checked class="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 cursor-pointer">
                 <span>Cevap Çizgileri (...)</span>
               </label>
-              <div class="h-3 w-px bg-slate-300"></div>
-              <label class="flex items-center gap-1.5 text-xs font-semibold text-slate-700 cursor-pointer select-none" title="Sınav başlığında senaryo adı ve konu detayının (SENARYO 1 ...) gösterilip gösterilmeyeceğini belirler">
-                <input type="checkbox" id="chkShowScenarioInHeader" checked class="w-3.5 h-3.5 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer">
-                <span>Başlıkta Senaryo Adı</span>
-              </label>
+              <div id="scenarioHeaderCheckboxWrapper" class="flex items-center gap-2">
+                <div class="h-3 w-px bg-slate-300"></div>
+                <label class="flex items-center gap-1.5 text-xs font-semibold text-slate-700 cursor-pointer select-none" title="Sınav başlığında senaryo adı ve konu detayının (SENARYO 1 ...) gösterilip gösterilmeyeceğini belirler">
+                  <input type="checkbox" id="chkShowScenarioInHeader" checked class="w-3.5 h-3.5 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer">
+                  <span>Başlıkta Senaryo Adı</span>
+                </label>
+              </div>
+              <div id="bepHeaderCheckboxWrapper" class="hidden flex items-center gap-2">
+                <div class="h-3 w-px bg-teal-300"></div>
+                <label class="flex items-center gap-1.5 text-xs font-extrabold text-teal-900 bg-teal-50 px-2 py-0.5 rounded border border-teal-300 cursor-pointer select-none shadow-2xs" title="Kağıt başlığında '♿ BEP KAPSAMINDAKİ ÖĞRENCİ SINAVI (BİREYSELLEŞTİRİLMİŞ EĞİTİM PROGRAMI)' ibaresinin görünüp görünmeyeceğini belirler">
+                  <input type="checkbox" id="chkShowBepInHeader" checked class="w-3.5 h-3.5 rounded text-teal-700 focus:ring-teal-500 cursor-pointer">
+                  <span>♿ Başlıkta BEP Sınavı İbaresi</span>
+                </label>
+              </div>
             </div>
             <div class="h-4 w-px bg-slate-300 mx-0.5"></div>
             <button id="btnAddQuestion" class="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-600 hover:bg-emerald-700 text-white shadow transition flex items-center gap-1">
@@ -925,6 +934,6 @@
   <div id="toastNotification" class="hidden fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-lg shadow-lg text-xs font-semibold text-white transition-all transform duration-300">
   </div>
 
-  <script src="/static/app.js?v=3.3"></script>
+  <script src="/static/app.js?v=3.4"></script>
 </body>
 </html>
