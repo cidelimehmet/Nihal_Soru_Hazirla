@@ -23,6 +23,7 @@ const state = {
     questions: []
   },
   showAnswerLines: true, // Noktalı cevap çizgilerini göster/gizle
+  showQuestionOutcomes: true, // Soru altında kazanım bilgisini göster/gizle
   showScenarioInHeader: true, // Başlıkta senaryo adı ve konu detayını göster/gizle
   showBepInHeader: true, // BEP sınavlarında başlıkta BEP ibaresini göster/gizle
   activeTab: "exam", // "exam", "answer_key", "source_verification"
@@ -47,7 +48,9 @@ const state = {
     show_bep_header: true,
     custom_outcomes: ""
   },
-  isLoading: false
+  workspaceBannerMode: null, // null | "restored_draft" | "saved_success"
+  isLoading: false,
+  loadingStartedAt: 0
 };
 
 /**
@@ -71,9 +74,83 @@ function toTurkishUpper(str) {
   }
 }
 
+function normalizeExamLayout(layout, examType = "yazili_sinav") {
+  if (layout === "1_column" || layout === "1" || layout === "tek_sutun" || layout === "single") {
+    return "1_column";
+  }
+  if (layout === "2_column" || layout === "2" || layout === "iki_sutun" || layout === "double") {
+    return "2_column";
+  }
+  return examType === "bep_sinav" ? "1_column" : "2_column";
+}
+
+function syncLayoutButtonsUI(explicitLayout = null) {
+  const currentType = state.currentExam?.exam_type || document.getElementById("examTypeSelect")?.value || "yazili_sinav";
+  const activeLayout = normalizeExamLayout(explicitLayout || state.currentExam?.layout, currentType);
+  if (state.currentExam) {
+    state.currentExam.layout = activeLayout;
+  }
+
+  const btn2 = document.getElementById("btnLayout2Col");
+  const btn1 = document.getElementById("btnLayout1Col");
+  if (!btn1 || !btn2) return;
+
+  const activeClass = "px-2.5 py-1 text-xs font-semibold rounded bg-blue-600 text-white shadow ring-1 ring-blue-700 transition";
+  const inactiveClass = "px-2.5 py-1 text-xs font-semibold rounded bg-slate-200 text-slate-700 hover:bg-slate-300 transition";
+
+  if (activeLayout === "2_column") {
+    btn2.className = activeClass;
+    btn2.setAttribute("aria-pressed", "true");
+    btn1.className = inactiveClass;
+    btn1.setAttribute("aria-pressed", "false");
+  } else {
+    btn1.className = activeClass;
+    btn1.setAttribute("aria-pressed", "true");
+    btn2.className = inactiveClass;
+    btn2.setAttribute("aria-pressed", "false");
+  }
+}
+
+function togglePaperDisplayCombo(event) {
+  if (event) event.stopPropagation();
+  const menu = document.getElementById("paperDisplayComboMenu");
+  if (!menu) return;
+  menu.classList.toggle("hidden");
+}
+
+function setAllPaperDisplayOptions(enabled) {
+  const val = Boolean(enabled);
+  state.showAnswerLines = val;
+  state.showQuestionOutcomes = val;
+  state.showScenarioInHeader = val;
+  state.showBepInHeader = val;
+
+  if (!state.bepOptions) state.bepOptions = {};
+  state.bepOptions.show_bep_header = val;
+
+  if (state.currentExam) {
+    state.currentExam.show_answer_lines = val;
+    state.currentExam.show_question_outcomes = val;
+    state.currentExam.show_scenario_in_header = val;
+    if (state.currentExam.exam_type === "bep_sinav") {
+      state.currentExam.bep_options = {
+        ...(state.currentExam.bep_options || {}),
+        ...state.bepOptions,
+        show_bep_header: val
+      };
+    }
+  }
+
+  syncHeaderOptionsUI();
+  renderExamPages();
+  saveDraft(false, true);
+}
+
 function syncHeaderOptionsUI() {
   const chkAns = document.getElementById("chkShowAnswerLines");
   if (chkAns) chkAns.checked = (state.showAnswerLines !== false);
+  const chkOut = document.getElementById("chkShowQuestionOutcomes");
+  if (chkOut) chkOut.checked = (state.showQuestionOutcomes !== false);
   const chkScen = document.getElementById("chkShowScenarioInHeader");
   if (chkScen) chkScen.checked = (state.showScenarioInHeader !== false);
   const chkBep = document.getElementById("chkShowBepInHeader");
@@ -90,6 +167,18 @@ function syncHeaderOptionsUI() {
   if (scenWrapper) {
     scenWrapper.classList.toggle("hidden", isBep);
   }
+
+  // Combobox üzerindeki aktif seçenek sayacını güncelle (örn. 3/3)
+  const countBadge = document.getElementById("paperDisplayComboCount");
+  if (countBadge) {
+    const activeCount =
+      (state.showAnswerLines !== false ? 1 : 0) +
+      (state.showQuestionOutcomes !== false ? 1 : 0) +
+      (isBep ? (state.showBepInHeader !== false ? 1 : 0) : (state.showScenarioInHeader !== false ? 1 : 0));
+    countBadge.textContent = `${activeCount}/3`;
+  }
+
+  syncLayoutButtonsUI();
 }
 
 // --- BAŞLANGIÇ ---
@@ -154,27 +243,42 @@ function updateSchoolHeaderDisplay() {
   }
 }
 
-// Canlı Başlık Güncelleyici
+// Canlı Başlık ve Çalışma Alanı Senkronizasyonu
 function updatePaperHeaderLive() {
   const subjectSelect = document.getElementById("examSubject");
   const subjectId = subjectSelect ? subjectSelect.value : state.currentExam.subject;
   const subjName = (state.curriculum[subjectId] && state.curriculum[subjectId].name) 
                    ? state.curriculum[subjectId].name 
-                   : "DİN KÜLTÜRÜ VE AHLAK BİLGİSİ";
+                   : "Din Kültürü ve Ahlak Bilgisi";
   
-  const grade = document.getElementById("examGrade") ? document.getElementById("examGrade").value : state.currentExam.grade;
+  const grade = parseInt(document.getElementById("examGrade") ? document.getElementById("examGrade").value : state.currentExam.grade, 10) || 5;
   const term = document.getElementById("examTerm") ? document.getElementById("examTerm").value : state.currentExam.term;
   const exam_no = document.getElementById("examNo") ? document.getElementById("examNo").value : state.currentExam.exam_no;
   const scenario = document.getElementById("examScenario") ? document.getElementById("examScenario").value : state.currentExam.scenario;
   const exam_type = document.getElementById("examTypeSelect") ? document.getElementById("examTypeSelect").value : state.currentExam.exam_type;
 
-  state.currentExam.subject = subjectId;
-  state.currentExam.subject_name = subjName;
-  state.currentExam.grade = parseInt(grade, 10);
-  state.currentExam.term = term || "1. Dönem";
-  state.currentExam.exam_no = exam_no || "1. Yazılı";
-  state.currentExam.scenario = scenario || "Senaryo 1";
-  state.currentExam.exam_type = exam_type || "yazili_sinav";
+  const hasQuestions = Array.isArray(state.currentExam?.questions) && state.currentExam.questions.length > 0;
+
+  if (!hasQuestions) {
+    state.currentExam.subject = subjectId;
+    state.currentExam.subject_name = subjName;
+    state.currentExam.grade = grade;
+    state.currentExam.term = term || "1. Dönem";
+    state.currentExam.exam_no = exam_no || "1. Yazılı";
+    state.currentExam.scenario = scenario || "Senaryo 1";
+    state.currentExam.exam_type = exam_type || "yazili_sinav";
+  } else {
+    // Eğer ekranda mevcut sorular varsa ve kullanıcı aynı ders/sınıf içinde sadece yazılı numarasını veya senaryo başlığını değiştirdiyse başlığı güncelle;
+    // ancak Ders veya Sınıf değiştiyse eski soruların üzerine yeni dersin adını yazıp karışıklık yaratma, uyarı çubuğunu göster!
+    const sameCourseAndGrade = (state.currentExam.subject === subjectId && parseInt(state.currentExam.grade, 10) === grade);
+    if (sameCourseAndGrade) {
+      state.currentExam.term = term || state.currentExam.term || "1. Dönem";
+      state.currentExam.exam_no = exam_no || state.currentExam.exam_no || "1. Yazılı";
+      state.currentExam.scenario = scenario || state.currentExam.scenario || "Senaryo 1";
+    }
+  }
+
+  syncWorkspaceStatusUI();
 }
 
 // --- KULLANICI GİRİŞ (AUTH) ---
@@ -242,8 +346,7 @@ window.handleLogin = async function(e) {
 
     showApp();
     populateCurriculumUI();
-    updatePaperHeaderLive();
-    renderExamPages();
+    await checkAndRestoreDraft();
     showToast(`Hoş Geldiniz, ${data.user.teacher_name || "Nihal Öğretmen"}!`, "success");
   } catch (err) {
     if (errEl) {
@@ -276,15 +379,37 @@ let _isDraftDirty = false;
 function startAutoSaveEngine() {
   if (_autoSaveTimer) clearInterval(_autoSaveTimer);
   _autoSaveTimer = setInterval(async () => {
-    if (state.currentExam && state.currentExam.questions && state.currentExam.questions.length > 0) {
-      await saveDraft(false); // Sessiz periyodik kayıt
+    if (
+      _isDraftDirty &&
+      state.currentExam &&
+      state.currentExam.questions &&
+      state.currentExam.questions.length > 0
+    ) {
+      await saveDraft(false, false); // Sessiz periyodik kayıt
     }
   }, 15000); // Tam 15 saniyede bir
 }
 
-async function saveDraft(showVisualIndicator = true) {
+async function clearActiveDraft() {
+  _isDraftDirty = false;
+  try {
+    localStorage.removeItem("ti_active_draft");
+  } catch (e) {}
+  try {
+    await fetch("/api/draft", { method: "DELETE" });
+  } catch (e) {}
+  const indicator = document.getElementById("autoSaveIndicator");
+  if (indicator) {
+    indicator.classList.add("hidden");
+  }
+}
+
+async function saveDraft(showVisualIndicator = true, markDirty = true) {
   if (!state.currentExam || !state.currentExam.questions || state.currentExam.questions.length === 0) {
     return;
+  }
+  if (markDirty) {
+    _isDraftDirty = true;
   }
 
   const indicator = document.getElementById("autoSaveIndicator");
@@ -303,12 +428,261 @@ async function saveDraft(showVisualIndicator = true) {
       body: JSON.stringify(state.currentExam)
     }).catch(e => console.warn("Backend draft save warning:", e));
 
-    if (indicator && indicatorText) {
+    if (indicator && indicatorText && showVisualIndicator) {
       indicator.classList.remove("hidden");
-      indicatorText.textContent = `Taslak Korundu (${timeStr})`;
+      indicatorText.textContent = `Geçici Taslak (${timeStr})`;
     }
   } catch (e) {
     console.error("Taslak kaydetme hatası:", e);
+  }
+  syncWorkspaceStatusUI();
+}
+
+function dismissWorkspaceBanner() {
+  state.workspaceBannerMode = null;
+  renderWorkspaceContextBanner();
+}
+
+function getSidebarMismatchInfo() {
+  const questions = state.currentExam?.questions || [];
+  if (questions.length === 0) return null;
+
+  const sidebarSubj = document.getElementById("examSubject")?.value || state.currentExam.subject;
+  const sidebarGrade = parseInt(document.getElementById("examGrade")?.value || state.currentExam.grade, 10);
+  const sidebarType = document.getElementById("examTypeSelect")?.value || state.currentExam.exam_type || "yazili_sinav";
+
+  const examSubj = state.currentExam.subject;
+  const examGrade = parseInt(state.currentExam.grade, 10);
+  const examType = state.currentExam.exam_type || "yazili_sinav";
+
+  if (sidebarSubj !== examSubj || sidebarGrade !== examGrade || sidebarType !== examType) {
+    const newSubjName = state.curriculum[sidebarSubj]?.name || sidebarSubj;
+    const oldSubjName = state.currentExam.subject_name || state.curriculum[examSubj]?.name || examSubj;
+    const typeLabel = sidebarType === "bep_sinav" ? " (BEP)" : "";
+    const oldTypeLabel = examType === "bep_sinav" ? " (BEP)" : "";
+    return {
+      newLabel: `${sidebarGrade}. Sınıf ${newSubjName}${typeLabel}`,
+      oldLabel: `${examGrade}. Sınıf ${oldSubjName}${oldTypeLabel}`
+    };
+  }
+  return null;
+}
+
+function renderWorkspaceContextBanner() {
+  const banner = document.getElementById("workspaceContextBanner");
+  if (!banner) return;
+
+  const mismatch = getSidebarMismatchInfo();
+  if (mismatch) {
+    banner.className = "no-print w-full max-w-[210mm] mx-auto mb-3 bg-amber-50 border-2 border-amber-300 rounded-xl px-4 py-2.5 shadow-sm flex items-center justify-between flex-wrap gap-2";
+    banner.innerHTML = `
+      <div class="flex items-start gap-2.5 text-xs text-amber-950">
+        <span class="text-base leading-none mt-0.5">⚠️</span>
+        <div>
+          <div class="font-extrabold">Sol Panel Seçimi Değişti (${mismatch.newLabel})</div>
+          <div class="text-[11px] text-amber-900 mt-0.5">
+            Ekranda hâlâ önceki çalışmanız olan <strong>${mismatch.oldLabel}</strong> soruları bulunuyor. Yeni seçime uygun soruları hazırlayabilir veya ekranı temizleyebilirsiniz.
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" onclick="handleGenerateExam()" class="px-3 py-1.5 text-xs font-extrabold rounded-lg bg-blue-900 hover:bg-blue-800 text-white shadow-xs transition flex items-center gap-1">
+          <span>✨</span> Yeni Seçime Göre Soruları Hazırla
+        </button>
+        <button type="button" onclick="startNewBlankExam()" class="px-2.5 py-1.5 text-xs font-bold rounded-lg bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-amber-300 transition">
+          🧹 Eski Soruları Temizle
+        </button>
+      </div>
+    `;
+    banner.classList.remove("hidden");
+    return;
+  }
+
+  if (state.workspaceBannerMode === "restored_draft" && (state.currentExam?.questions || []).length > 0) {
+    const exTitle = state.currentExam.title || `${state.currentExam.grade}. Sınıf ${state.currentExam.subject_name}`;
+    banner.className = "no-print w-full max-w-[210mm] mx-auto mb-3 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-2.5 shadow-sm flex items-center justify-between flex-wrap gap-2";
+    banner.innerHTML = `
+      <div class="flex items-center gap-2 text-xs text-indigo-950">
+        <span class="text-base">📌</span>
+        <div>
+          <span class="font-bold">Önceki oturumdan kalan taslak yüklendi:</span>
+          <span class="font-semibold text-indigo-800">${exTitle}</span>
+          <span class="text-[11px] text-slate-600 block sm:inline sm:ml-1">— Kaldığınız yerden devam edebilir veya yeni sınav için ekranı temizleyebilirsiniz.</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" onclick="startNewBlankExam()" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 text-white shadow-2xs transition flex items-center gap-1">
+          <span>🧹</span> Ekranı Temizle (Yeni Sınav)
+        </button>
+        <button type="button" onclick="dismissWorkspaceBanner()" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white hover:bg-indigo-100 text-indigo-900 border border-indigo-200 transition">
+          👍 Taslağa Devam Et
+        </button>
+      </div>
+    `;
+    banner.classList.remove("hidden");
+    return;
+  }
+
+  if (state.workspaceBannerMode === "saved_success" && state.currentExam?.id) {
+    banner.className = "no-print w-full max-w-[210mm] mx-auto mb-3 bg-emerald-50 border border-emerald-300 rounded-xl px-4 py-2.5 shadow-sm flex items-center justify-between flex-wrap gap-2";
+    banner.innerHTML = `
+      <div class="flex items-center gap-2 text-xs text-emerald-950">
+        <span class="text-base">✅</span>
+        <div>
+          <span class="font-extrabold">Sınav Arşive Kaydedildi (Kayıt #${state.currentExam.id}).</span>
+          <span class="text-[11px] text-emerald-900 ml-1">Bu sınav artık Sınav Arşivi'nde güvende. Yeni bir sınav hazırlamak için ekranı temizleyebilirsiniz.</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" onclick="startNewBlankExam()" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white shadow-2xs transition flex items-center gap-1">
+          <span>🆕</span> Ekranı Temizle & Yeni Sınav Aç
+        </button>
+        <button type="button" onclick="switchView('exam_archive')" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-white hover:bg-emerald-100 text-emerald-900 border border-emerald-300 transition">
+          📂 Arşivi Gör
+        </button>
+        <button type="button" onclick="dismissWorkspaceBanner()" class="px-2 py-1 text-xs font-semibold text-emerald-800 hover:underline">
+          Kapat
+        </button>
+      </div>
+    `;
+    banner.classList.remove("hidden");
+    return;
+  }
+
+  banner.classList.add("hidden");
+  banner.innerHTML = "";
+}
+
+function syncWorkspaceStatusUI() {
+  const badge = document.getElementById("examWorkspaceStatusBadge");
+  const dot = document.getElementById("examWorkspaceStatusDot");
+  const text = document.getElementById("examWorkspaceStatusText");
+  const btnSave = document.getElementById("btnSaveExam");
+  const btnSaveAsNew = document.getElementById("btnSaveAsNewExam");
+  const btnGenText = document.getElementById("btnGenerateExamText");
+  const btnToolbarClear = document.getElementById("btnToolbarNewBlankExam");
+
+  const questions = state.currentExam?.questions || [];
+  const hasQuestions = questions.length > 0;
+  const examId = state.currentExam?.id || null;
+
+  if (btnToolbarClear) {
+    btnToolbarClear.classList.toggle("opacity-50", !hasQuestions);
+  }
+
+  if (!hasQuestions) {
+    if (badge && dot && text) {
+      badge.className = "text-[11px] font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 border border-slate-200";
+      dot.className = "w-2 h-2 rounded-full bg-slate-400";
+      text.textContent = "Boş Sınav Sayfası";
+    }
+    if (btnSave) {
+      btnSave.innerHTML = "💾 Arşive Kaydet";
+    }
+    if (btnSaveAsNew) {
+      btnSaveAsNew.classList.add("hidden");
+    }
+    if (btnGenText) {
+      btnGenText.textContent = "Sınavı Hazırla (Yeni Sorular Üret)";
+    }
+  } else if (examId && !_isDraftDirty) {
+    if (badge && dot && text) {
+      badge.className = "text-[11px] font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-2xs";
+      dot.className = "w-2 h-2 rounded-full bg-emerald-600";
+      text.textContent = `Arşive Kayıtlı (#${examId})`;
+    }
+    if (btnSave) {
+      btnSave.innerHTML = `💾 Kaydı Güncelle (#${examId})`;
+    }
+    if (btnSaveAsNew) {
+      btnSaveAsNew.classList.remove("hidden");
+    }
+    if (btnGenText) {
+      btnGenText.textContent = "Yeni Sınav Hazırla (Farklı Sorular Üret)";
+    }
+  } else if (examId && _isDraftDirty) {
+    if (badge && dot && text) {
+      badge.className = "text-[11px] font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs";
+      dot.className = "w-2 h-2 rounded-full bg-amber-500 animate-pulse";
+      text.textContent = `Kayıtlı Sınav Düzenleniyor (#${examId})`;
+    }
+    if (btnSave) {
+      btnSave.innerHTML = `💾 Değişiklikleri Kaydet (#${examId})`;
+    }
+    if (btnSaveAsNew) {
+      btnSaveAsNew.classList.remove("hidden");
+    }
+    if (btnGenText) {
+      btnGenText.textContent = "Yeni Sınav Hazırla (Farklı Sorular Üret)";
+    }
+  } else {
+    if (badge && dot && text) {
+      badge.className = "text-[11px] font-bold flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-900 border border-blue-200 shadow-2xs";
+      dot.className = "w-2 h-2 rounded-full bg-blue-600 animate-pulse";
+      text.textContent = "Yeni Sınav Taslağı (Kaydedilmedi)";
+    }
+    if (btnSave) {
+      btnSave.innerHTML = "💾 Arşive Kaydet";
+    }
+    if (btnSaveAsNew) {
+      btnSaveAsNew.classList.add("hidden");
+    }
+    if (btnGenText) {
+      btnGenText.textContent = "Yeniden Hazırla (Farklı Sorular Getir)";
+    }
+  }
+
+  renderWorkspaceContextBanner();
+}
+
+async function startNewBlankExam(options = {}) {
+  const { switchToMaker = false, silent = false } = options;
+
+  const subjectSelect = document.getElementById("examSubject");
+  const subjectId = subjectSelect ? subjectSelect.value : (state.currentExam?.subject || "dkab");
+  const subjName = (state.curriculum[subjectId] && state.curriculum[subjectId].name)
+    ? state.curriculum[subjectId].name
+    : "Din Kültürü ve Ahlak Bilgisi";
+  const grade = parseInt(document.getElementById("examGrade")?.value || state.currentExam?.grade || "5", 10);
+  const term = document.getElementById("examTerm")?.value || "1. Dönem";
+  const exam_no = document.getElementById("examNo")?.value || "1. Yazılı";
+  const scenario = document.getElementById("examScenario")?.value || "Senaryo 1";
+  const exam_type = document.getElementById("examTypeSelect")?.value || "yazili_sinav";
+  const isBepExam = (exam_type === "bep_sinav");
+
+  state.currentExam = {
+    id: null,
+    title: isBepExam
+      ? `${grade}. Sınıf ${subjName} ${term} ${exam_no} (BEP Kapsamındaki Öğrenci Sınavı)`
+      : `${grade}. Sınıf ${subjName} ${term} ${exam_no}`,
+    exam_type,
+    subject: subjectId,
+    subject_name: subjName,
+    grade,
+    term,
+    exam_no,
+    scenario: isBepExam ? "BEP Bireysel Kazanım" : scenario,
+    layout: normalizeExamLayout(state.currentExam?.layout, exam_type),
+    show_answer_lines: (state.showAnswerLines !== false),
+    show_scenario_in_header: (state.showScenarioInHeader !== false),
+    bep_options: isBepExam ? { ...(state.bepOptions || {}) } : {},
+    total_points: 100,
+    questions: []
+  };
+
+  state.workspaceBannerMode = null;
+  await clearActiveDraft();
+
+  if (switchToMaker) {
+    switchView("exam_maker");
+  }
+  switchTab("exam");
+  recalculateTotalPoints();
+  renderExamPages();
+  syncWorkspaceStatusUI();
+
+  if (!silent) {
+    showToast("🧹 Ekran temizlendi ve yeni boş sınav sayfası açıldı. Sol panelden seçim yapıp 'Sınavı Hazırla' butonuna basabilirsiniz.", "info");
   }
 }
 
@@ -335,16 +709,28 @@ async function checkAndRestoreDraft() {
 
   // Eğer geçerli bir taslak varsa geri yükle
   if (draftData && draftData.questions && draftData.questions.length > 0) {
+    draftData.layout = normalizeExamLayout(draftData.layout, draftData.exam_type);
     state.currentExam = draftData;
     if (draftData.show_answer_lines !== undefined) {
       state.showAnswerLines = draftData.show_answer_lines;
     }
+    if (draftData.show_question_outcomes !== undefined) {
+      state.showQuestionOutcomes = draftData.show_question_outcomes;
+    }
     if (draftData.show_scenario_in_header !== undefined) {
       state.showScenarioInHeader = draftData.show_scenario_in_header;
     }
-    syncHeaderOptionsUI();
-    
+    if (draftData.bep_options) {
+      state.bepOptions = { ...state.bepOptions, ...draftData.bep_options };
+      if (draftData.bep_options.show_bep_header !== undefined) {
+        state.showBepInHeader = draftData.bep_options.show_bep_header;
+      }
+    }
+
     // Sol panel kontrollerini taslağa göre senkronize et
+    if (document.getElementById("examTypeSelect") && draftData.exam_type) {
+      document.getElementById("examTypeSelect").value = draftData.exam_type;
+    }
     if (document.getElementById("examSubject") && draftData.subject) {
       document.getElementById("examSubject").value = draftData.subject;
     }
@@ -357,12 +743,22 @@ async function checkAndRestoreDraft() {
     if (document.getElementById("examNo") && draftData.exam_no) {
       document.getElementById("examNo").value = draftData.exam_no;
     }
+    if (draftData.exam_type === "bep_sinav") {
+      onExamTypeChange(true);
+    } else if (document.getElementById("examScenario") && draftData.scenario) {
+      populateScenarioDropdown();
+      document.getElementById("examScenario").value = draftData.scenario;
+    }
     if (document.getElementById("examQuestionCount")) {
       document.getElementById("examQuestionCount").value = draftData.questions.length;
     }
 
+    syncHeaderOptionsUI();
     recalculateTotalPoints();
+    state.workspaceBannerMode = "restored_draft";
+    _isDraftDirty = !Boolean(draftData.id);
     renderExamPages();
+    syncWorkspaceStatusUI();
 
     const indicator = document.getElementById("autoSaveIndicator");
     const indicatorText = document.getElementById("autoSaveText");
@@ -370,10 +766,12 @@ async function checkAndRestoreDraft() {
       indicator.classList.remove("hidden");
       indicatorText.textContent = "Taslak Geri Yüklendi";
     }
-
-    showToast("Önceki oturumunuzdan kalan taslak sınav otomatik olarak geri yüklendi (Veri kaybı önlendi).", "success");
   } else {
+    state.workspaceBannerMode = null;
+    _isDraftDirty = false;
+    syncHeaderOptionsUI();
     renderExamPages();
+    syncWorkspaceStatusUI();
   }
 }
 
@@ -481,7 +879,9 @@ function toggleQuickBepMode() {
   onExamTypeChange();
 }
 
-function onExamTypeChange() {
+function onExamTypeChange(preserveLayout = false) {
+  const shouldPreserveLayout = (preserveLayout === true);
+  const prevExamType = state.currentExam?.exam_type || "yazili_sinav";
   const typeSelect = document.getElementById("examTypeSelect");
   const examType = typeSelect ? typeSelect.value : "yazili_sinav";
   const isBep = (examType === "bep_sinav");
@@ -503,14 +903,13 @@ function onExamTypeChange() {
   const diffSelect = document.getElementById("examDifficulty");
 
   if (isBep) {
-    // 1. MEB BEP Yönetmeliği: Tek sütun düzenini otomatik seç
-    state.currentExam.layout = "1_column";
-    const btn2 = document.getElementById("btnLayout2Col");
-    const btn1 = document.getElementById("btnLayout1Col");
-    if (btn1 && btn2) {
-      btn1.className = "px-2.5 py-1 text-xs font-semibold rounded bg-blue-600 text-white shadow";
-      btn2.className = "px-2.5 py-1 text-xs font-semibold rounded bg-slate-200 text-slate-700 hover:bg-slate-300";
+    // 1. MEB BEP Yönetmeliği: Tek sütun düzenini otomatik seç (Taslak/Arşiv geri yüklemesi değilse)
+    if (!shouldPreserveLayout) {
+      state.currentExam.layout = "1_column";
+    } else {
+      state.currentExam.layout = normalizeExamLayout(state.currentExam.layout, "bep_sinav");
     }
+    syncLayoutButtonsUI(state.currentExam.layout);
 
     // 2. Soru sayısını 5 (5x20=100 Puan) veya 4 (4x25=100 Puan) bandına çek
     if (qCountInput && parseInt(qCountInput.value, 10) > 5) {
@@ -537,8 +936,17 @@ function onExamTypeChange() {
     updatePaperHeaderLive();
     syncHeaderOptionsUI();
     renderExamPages();
-    showToast("♿ BEP Sınav Modu aktif edildi: Tek sütun, 12-14/16 punto okunaklı yazı tipi, 5 soru (5x20p) ve sadeleştirilmiş soru tipleri ayarlandı.", "info");
+    if (!shouldPreserveLayout) {
+      showToast("♿ BEP Sınav Modu aktif edildi: Tek sütun, 12-14/16 punto okunaklı yazı tipi, 5 soru (5x20p) ve sadeleştirilmiş soru tipleri ayarlandı.", "info");
+    }
   } else {
+    // BEP modundan standart sınava geçildiğinde varsayılan 2 sütun düzenine geri dön
+    if (!shouldPreserveLayout && prevExamType === "bep_sinav") {
+      state.currentExam.layout = "2_column";
+    } else {
+      state.currentExam.layout = normalizeExamLayout(state.currentExam.layout, examType);
+    }
+    syncLayoutButtonsUI(state.currentExam.layout);
     populateScenarioDropdown();
     updatePaperHeaderLive();
     syncHeaderOptionsUI();
@@ -756,6 +1164,31 @@ function renderActiveScenarioSummaryBox(scenarioObj) {
 }
 
 // --- SINAV HAZIRLAMA (API İSTEĞİ) ---
+function getRecentExcludedQuestions(subject, grade) {
+  if (!state.recentQuestionsByCourse) {
+    state.recentQuestionsByCourse = {};
+  }
+  const key = `${subject}_${grade}`;
+  const historyList = state.recentQuestionsByCourse[key] || [];
+  const currentOnScreen = (state.currentExam?.questions || [])
+    .map(q => (q.question_text || "").trim())
+    .filter(Boolean);
+  return Array.from(new Set([...currentOnScreen, ...historyList])).slice(-36);
+}
+
+function recordServedQuestions(subject, grade, questions) {
+  if (!state.recentQuestionsByCourse) {
+    state.recentQuestionsByCourse = {};
+  }
+  const key = `${subject}_${grade}`;
+  const prev = state.recentQuestionsByCourse[key] || [];
+  const newTexts = (questions || [])
+    .map(q => (q.question_text || "").trim())
+    .filter(Boolean);
+  const merged = Array.from(new Set([...prev, ...newTexts]));
+  state.recentQuestionsByCourse[key] = merged.slice(-36);
+}
+
 async function handleGenerateExam() {
   const subject = document.getElementById("examSubject").value;
   const grade = parseInt(document.getElementById("examGrade").value, 10);
@@ -770,29 +1203,38 @@ async function handleGenerateExam() {
   const scenario_items = (exam_type !== "bep_sinav" && scenario !== "Özel" && state.activeScenarioObj && Array.isArray(state.activeScenarioObj.items))
     ? state.activeScenarioObj.items
     : [];
+  const exclude_questions = getRecentExcludedQuestions(subject, grade);
 
-  setLoading(true, exam_type === "bep_sinav"
-    ? "MEB Özel Eğitim & BEP Yönergesine uygun bireyselleştirilmiş sorular hazırlanıyor..."
-    : "MEB Senaryosu ve Ders Kitapları taranarak sorular hazırlanıyor...");
+  setLoading(
+    true,
+    exam_type === "bep_sinav"
+      ? "MEB Özel Eğitim & BEP Yönergesine uygun bireyselleştirilmiş sorular hazırlanıyor..."
+      : "MEB Senaryosu ve Ders Kitapları taranarak sorular hazırlanıyor...",
+    "Türkiye Yüzyılı Maarif Modeli standartları uygulanıyor."
+  );
 
   try {
-    const res = await fetch("/api/generate-exam", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        subject,
-        grade,
-        exam_type,
-        term,
-        exam_no,
-        scenario: exam_type === "bep_sinav" ? "BEP Bireysel Kazanım" : scenario,
-        question_count,
-        selected_units: checkedUnits,
-        difficulty: exam_type === "bep_sinav" ? "Kolay" : difficulty,
-        scenario_items,
-        bep_options: state.bepOptions || {}
-      })
-    });
+    const [res] = await Promise.all([
+      fetch("/api/generate-exam", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject,
+          grade,
+          exam_type,
+          term,
+          exam_no,
+          scenario: exam_type === "bep_sinav" ? "BEP Bireysel Kazanım" : scenario,
+          question_count,
+          selected_units: checkedUnits,
+          difficulty: exam_type === "bep_sinav" ? "Kolay" : difficulty,
+          scenario_items,
+          bep_options: state.bepOptions || {},
+          exclude_questions
+        })
+      }),
+      new Promise(resolve => setTimeout(resolve, 520))
+    ]);
 
     if (!res.ok) {
       const err = await res.json();
@@ -801,6 +1243,7 @@ async function handleGenerateExam() {
 
     const data = await res.json();
     const questions = data.data.questions || [];
+    recordServedQuestions(subject, grade, questions);
 
     const subjName = state.curriculum[subject]?.name || subject;
     const isBepExam = (exam_type === "bep_sinav");
@@ -816,21 +1259,24 @@ async function handleGenerateExam() {
       term,
       exam_no,
       scenario: isBepExam ? "BEP Bireysel Kazanım" : scenario,
-      layout: isBepExam ? "1_column" : (state.currentExam.layout || "2_column"),
+      layout: normalizeExamLayout(state.currentExam?.layout, exam_type),
       show_answer_lines: (state.showAnswerLines !== false),
+      show_question_outcomes: (state.showQuestionOutcomes !== false),
       show_scenario_in_header: (state.showScenarioInHeader !== false),
       bep_options: isBepExam ? { ...(state.bepOptions || {}) } : {},
       total_points: 100,
       questions
     };
 
+    state.workspaceBannerMode = null;
     recalculateTotalPoints();
     renderExamPages();
     
     // Soru hazırlandığında 1 defa ANINDA taslak kaydet (Kullanıcı Talebi)
-    await saveDraft(true);
+    await saveDraft(true, true);
+    loadQuestionBank();
 
-    showToast(isBepExam ? "♿ BEP Kapsamındaki Öğrenci Sınavı başarıyla hazırlandı!" : "Sınav ve sorular başarıyla hazırlandı!", "success");
+    showToast(isBepExam ? "♿ BEP Sınavı hazırlandı ve sorular Soru Bankasına eklendi!" : "✨ Yeni sınav hazırlandı ve üretilen sorular Soru Bankasına eklendi!", "success");
   } catch (err) {
     showToast(err.message, "error");
   } finally {
@@ -969,21 +1415,35 @@ function renderExamPages(forcedPageCount = null) {
   container.innerHTML = "";
 
   const exam = state.currentExam;
+  exam.layout = normalizeExamLayout(exam.layout, exam.exam_type);
   const questions = exam.questions || [];
   syncHeaderOptionsUI();
 
   if (questions.length === 0) {
+    const selSubjId = document.getElementById("examSubject")?.value || exam.subject || "dkab";
+    const selSubjName = state.curriculum[selSubjId]?.name || exam.subject_name || "Din Kültürü ve Ahlak Bilgisi";
+    const selGrade = document.getElementById("examGrade")?.value || exam.grade || 5;
+    const selTerm = document.getElementById("examTerm")?.value || exam.term || "1. Dönem";
+    const selExamNo = document.getElementById("examNo")?.value || exam.exam_no || "1. Yazılı";
     container.innerHTML = `
       <div class="a4-sheet flex flex-col justify-center items-center text-slate-400">
-        <div class="text-5xl mb-3">📝</div>
-        <div class="font-bold text-base text-slate-700">Henüz Soru Hazırlanmadı</div>
-        <div class="text-xs text-slate-500 mt-1 max-w-sm text-center">
-          Sol menüden ders, sınıf ve soru adedini belirleyip <strong>"Sınavı Hazırla"</strong> butonuna basınız.
+        <div class="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-4xl mb-3 shadow-2xs">📝</div>
+        <div class="font-extrabold text-base text-slate-800">Yeni Sınav Sayfası Hazır</div>
+        <div class="text-xs font-semibold text-indigo-700 mt-1 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100">
+          Seçili Kademe: ${selGrade}. Sınıf • ${selSubjName} (${selTerm} ${selExamNo})
         </div>
+        <div class="text-xs text-slate-500 mt-3 max-w-md text-center leading-relaxed">
+          Sol menüden ders, sınıf, senaryo ve üniteleri kontrol edip aşağıdaki veya sol menüdeki <strong>"✨ Sınavı Hazırla"</strong> butonuna basarak özgün sorular üretebilirsiniz.
+        </div>
+        <button type="button" onclick="handleGenerateExam()"
+                class="mt-4 py-2.5 px-5 bg-gradient-to-r from-blue-900 to-indigo-900 hover:from-blue-800 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-md hover:shadow-lg transition flex items-center gap-2">
+          <span>✨</span> Seçili Kriterlerle Sınavı Hazırla
+        </button>
       </div>
     `;
     renderAnswerKeySheet();
     renderSourceVerificationSheet();
+    syncWorkspaceStatusUI();
     return;
   }
 
@@ -991,11 +1451,12 @@ function renderExamPages(forcedPageCount = null) {
   const bepOpts = exam.bep_options || state.bepOptions || {};
   const isLargeBepFont = (isBep && bepOpts.font_size === "16pt");
   const showBepBanner = (isBep && state.showBepInHeader !== false && bepOpts.show_bep_header !== false);
-  syncHeaderOptionsUI();
 
-  // Kullanıcının "Tek Sütun" / "2 Sütun" tercihine saygı duy (BEP seçildiğinde varsayılan 1_column olarak gelir,
-  // ancak öğretmen 2 Sütun'a tıklarsa 2 sütunlu dengeli yerleşim de çalışır)
-  const is2Col = (exam.layout === "2_column");
+  // Kullanıcının "Tek Sütun" / "2 Sütun" tercihine saygı duy ve buton ile A4 kağıdını %100 senkron tut
+  const activeLayout = normalizeExamLayout(exam.layout, exam.exam_type);
+  exam.layout = activeLayout;
+  syncLayoutButtonsUI(activeLayout);
+  const is2Col = (activeLayout === "2_column");
 
   const weightCtx = { isBep, isLargeBepFont, is2Col, bepOpts };
   const totalWeight = questions.reduce((sum, q) => sum + estimateQuestionVisualWeight(q, weightCtx), 0);
@@ -1334,7 +1795,7 @@ function createQuestionCardHtml(q, index, layoutCtx = {}) {
         </div>
       </div>
 
-      ${q.learning_outcome ? `<span class="outcome-tag no-print">Kazanım: ${q.learning_outcome}</span>` : ""}
+      ${(state.showQuestionOutcomes !== false && q.learning_outcome) ? `<span class="outcome-tag">Kazanım: ${q.learning_outcome}</span>` : ""}
       ${arabicHtml}
 
       <div class="question-text-editable" contenteditable="true" onblur="updateQuestionText(${index}, this.innerText)">${displayQuestionText}</div>
@@ -1435,31 +1896,44 @@ function addNewQuestion() {
 
 async function regenerateSingleQuestion(idx) {
   const checkedUnits = Array.from(document.querySelectorAll(".unit-checkbox:checked")).map(cb => cb.value);
-  setLoading(true, `${idx + 1}. soru yeniden üretiliyor...`);
+  const subject = state.currentExam.subject;
+  const grade = state.currentExam.grade;
+  const exclude_questions = getRecentExcludedQuestions(subject, grade);
+  setLoading(
+    true,
+    `MEB Senaryosu ve Ders Kitapları taranarak ${idx + 1}. soru yeniden hazırlanıyor...`,
+    "Türkiye Yüzyılı Maarif Modeli standartları uygulanıyor."
+  );
 
   try {
-    const res = await fetch("/api/regenerate-question", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        subject: state.currentExam.subject,
-        grade: state.currentExam.grade,
-        term: state.currentExam.term || "1. Dönem",
-        exam_no: state.currentExam.exam_no || "1. Yazılı",
-        q_order: idx + 1,
-        selected_units: checkedUnits,
-        exam_type: state.currentExam.exam_type || "yazili_sinav",
-        bep_options: state.currentExam.bep_options || state.bepOptions || {}
-      })
-    });
+    const [res] = await Promise.all([
+      fetch("/api/regenerate-question", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject,
+          grade,
+          term: state.currentExam.term || "1. Dönem",
+          exam_no: state.currentExam.exam_no || "1. Yazılı",
+          q_order: idx + 1,
+          selected_units: checkedUnits,
+          exam_type: state.currentExam.exam_type || "yazili_sinav",
+          bep_options: state.currentExam.bep_options || state.bepOptions || {},
+          exclude_questions
+        })
+      }),
+      new Promise(resolve => setTimeout(resolve, 450))
+    ]);
     if (!res.ok) throw new Error("Yeniden üretilemedi.");
     const data = await res.json();
     if (data.question) {
       data.question.points = state.currentExam.questions[idx].points || 10;
       state.currentExam.questions[idx] = data.question;
+      recordServedQuestions(subject, grade, [data.question]);
       renderExamPages();
-      saveDraft(false);
-      showToast(`${idx + 1}. soru güncellendi!`, "success");
+      saveDraft(false, true);
+      loadQuestionBank();
+      showToast(`${idx + 1}. soru yeni bir soruyla güncellendi ve Soru Bankasına eklendi!`, "success");
     }
   } catch (err) {
     showToast(err.message, "error");
@@ -1470,21 +1944,14 @@ async function regenerateSingleQuestion(idx) {
 
 // --- DÜZEN DEĞİŞTİRME (2 SÜTUN / 1 SÜTUN) ---
 function toggleLayout(layout) {
-  state.currentExam.layout = layout;
-  const btn2 = document.getElementById("btnLayout2Col");
-  const btn1 = document.getElementById("btnLayout1Col");
-  
-  if (layout === "2_column") {
-    btn2.className = "px-2.5 py-1 text-xs font-semibold rounded bg-blue-600 text-white shadow";
-    btn1.className = "px-2.5 py-1 text-xs font-semibold rounded bg-slate-200 text-slate-700 hover:bg-slate-300";
-  } else {
-    btn1.className = "px-2.5 py-1 text-xs font-semibold rounded bg-blue-600 text-white shadow";
-    btn2.className = "px-2.5 py-1 text-xs font-semibold rounded bg-slate-200 text-slate-700 hover:bg-slate-300";
-  }
-  
-  // Sayfalama motorunu anında yeniden çalıştır!
+  const normalized = normalizeExamLayout(layout, state.currentExam?.exam_type);
+  state.currentExam.layout = normalized;
+  syncLayoutButtonsUI(normalized);
+
+  // Sayfalama motorunu anında yeniden çalıştır ve taslağı güncelle!
   renderExamPages();
-  showToast(`Sayfa düzeni ${layout === "2_column" ? "2 Sütunlu MEB" : "Tek Sütunlu"} olarak ayarlandı.`, "info");
+  saveDraft(false);
+  showToast(`Sayfa düzeni ${normalized === "2_column" ? "2 Sütunlu MEB" : "Tek Sütunlu"} olarak ayarlandı.`, "info");
 }
 
 // --- 3 ANA SEKME GEÇİŞİ (Öğrenci Kağıdı, Cevap Anahtarı, Kitap Doğrulama) ---
@@ -1698,6 +2165,7 @@ async function handleExportDocx(docType = "exam") {
         exam_data: {
           ...state.currentExam,
           show_answer_lines: (state.showAnswerLines !== false),
+          show_question_outcomes: (state.showQuestionOutcomes !== false),
           show_scenario_in_header: (state.showScenarioInHeader !== false),
           header_info: {
             school_header: state.config.school_header,
@@ -1731,66 +2199,87 @@ async function handleExportDocx(docType = "exam") {
 }
 
 // --- SINAVI KAYDETME & ARŞİV (GÖRSEL ONAY & GERİBİLDİRİM ÖZELLİĞİ) ---
-async function handleSaveExam() {
+async function handleSaveExam(saveAsNew = false) {
+  const forceNewRecord = (saveAsNew === true);
   const btn = document.getElementById("btnSaveExam");
   if (!state.currentExam.questions || state.currentExam.questions.length === 0) {
     showToast("Kaydedilecek soru bulunmuyor. Önce sınav sorularını oluşturunuz.", "warning");
     return;
   }
 
+  const wasUpdatingExisting = Boolean(state.currentExam.id && !forceNewRecord);
+
   // Buton üzerinde canlı kaydetme animasyonu
-  const origBtnText = btn ? btn.innerHTML : "💾 Kaydet";
   const origBtnClass = btn ? btn.className : "";
   if (btn) {
     btn.innerHTML = `<span>⏳</span> Kaydediliyor...`;
     btn.disabled = true;
   }
 
-  setLoading(true, "Sınav kaydediliyor ve sorular soru bankasına arşivleniyor...");
+  setLoading(
+    true,
+    wasUpdatingExisting
+      ? `Kayıtlı sınav (#${state.currentExam.id}) güncelleniyor...`
+      : "Sınav arşive kaydediliyor ve sorular soru bankasına ekleniyor...",
+    "Sınav Arşivi ve Soru Bankası veritabanı senkronize ediliyor."
+  );
   try {
+    const payload = {
+      ...state.currentExam,
+      id: forceNewRecord ? null : (state.currentExam.id || null),
+      show_answer_lines: (state.showAnswerLines !== false),
+      show_question_outcomes: (state.showQuestionOutcomes !== false),
+      show_scenario_in_header: (state.showScenarioInHeader !== false),
+      header_info: {
+        school_header: state.config.school_header,
+        school_name: state.config.school_name,
+        teacher_name: state.config.teacher_name
+      }
+    };
+
     const res = await fetch("/api/save-exam", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...state.currentExam,
-        show_answer_lines: (state.showAnswerLines !== false),
-        show_scenario_in_header: (state.showScenarioInHeader !== false),
-        header_info: {
-          school_header: state.config.school_header,
-          school_name: state.config.school_name,
-          teacher_name: state.config.teacher_name
-        }
-      })
+      body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error("Sınav kaydedilemedi.");
     const data = await res.json();
     state.currentExam.id = data.exam_id;
 
-    // KULLANICI TALEBİ: Ekrandan kaydet deyince kaydedildiğini net gösteren özellik!
+    // Arşive kaydedildiği için geçici taslağı temizle (Böylece uygulama tekrar açıldığında eski sınav ekranda asılı kalmaz!)
+    await clearActiveDraft();
+    state.workspaceBannerMode = "saved_success";
+    syncWorkspaceStatusUI();
+
     if (btn) {
-      btn.innerHTML = `<span>✅</span> Sınav Başarıyla Kaydedildi!`;
+      btn.innerHTML = `<span>✅</span> Arşive Kaydedildi (#${data.exam_id})`;
       btn.className = `px-3 py-1 text-xs font-extrabold rounded bg-emerald-600 text-white shadow-lg ring-2 ring-emerald-300 transition-all transform scale-105`;
     }
 
-    showToast("🎉 Sınav başarıyla arşive kaydedildi! Üst menüdeki '📂 Sınav Arşivi' ekranından dilediğiniz an inceleyebilir veya yazdırabilirsiniz.", "success");
+    showToast(
+      wasUpdatingExisting
+        ? `✅ Kayıtlı sınav (#${data.exam_id}) başarıyla güncellendi!`
+        : `🎉 Sınav başarıyla arşive kaydedildi (Kayıt #${data.exam_id})! Yeni sınav için '🧹 Temizle' butonunu kullanabilirsiniz.`,
+      "success"
+    );
     await loadSavedExamsList();
     loadQuestionBank();
 
-    // 3.5 saniye sonra butonu normal haline döndür
+    // 2.5 saniye sonra butonu normal durumuna döndür
     setTimeout(() => {
       if (btn) {
-        btn.innerHTML = origBtnText;
         btn.className = origBtnClass;
         btn.disabled = false;
       }
-    }, 3500);
+      syncWorkspaceStatusUI();
+    }, 2500);
 
   } catch (err) {
     if (btn) {
-      btn.innerHTML = origBtnText;
       btn.className = origBtnClass;
       btn.disabled = false;
     }
+    syncWorkspaceStatusUI();
     showToast(err.message, "error");
   } finally {
     setLoading(false);
@@ -1874,7 +2363,7 @@ function renderExamArchiveScreen() {
         <p class="text-xs text-slate-500 mt-1 mb-5">
           ${state.savedExams.length === 0 ? "Henüz arşive kaydedilmiş bir sınavınız yok. Sınav hazırlayıp '💾 Kaydet' butonuna basarak arşivleyebilirsiniz." : "Seçtiğiniz arama ve filtre kriterlerine uygun kayıtlı sınav bulunamadı."}
         </p>
-        <button type="button" onclick="switchView('exam_maker')" 
+        <button type="button" onclick="startNewBlankExam({ switchToMaker: true })" 
                 class="px-4 py-2 text-xs font-bold rounded-lg bg-indigo-900 hover:bg-indigo-800 text-white shadow transition inline-flex items-center gap-1.5">
           <span>➕</span> Yeni Sınav Hazırla
         </button>
@@ -2074,9 +2563,13 @@ async function loadExamById(id) {
     if (!loaded.subject_name) {
       loaded.subject_name = state.curriculum[loaded.subject]?.name || loaded.subject || "Din Kültürü ve Ahlak Bilgisi";
     }
+    loaded.layout = normalizeExamLayout(loaded.layout, loaded.exam_type);
     state.currentExam = loaded;
     if (loaded.show_answer_lines !== undefined) {
       state.showAnswerLines = loaded.show_answer_lines;
+    }
+    if (loaded.show_question_outcomes !== undefined) {
+      state.showQuestionOutcomes = loaded.show_question_outcomes;
     }
     if (loaded.show_scenario_in_header !== undefined) {
       state.showScenarioInHeader = loaded.show_scenario_in_header;
@@ -2087,7 +2580,6 @@ async function loadExamById(id) {
         state.showBepInHeader = loaded.bep_options.show_bep_header;
       }
     }
-    syncHeaderOptionsUI();
 
     // Sol panel form kontrollerini yüklenen sınava senkronize et
     if (document.getElementById("examTypeSelect") && loaded.exam_type) {
@@ -2106,7 +2598,7 @@ async function loadExamById(id) {
       document.getElementById("examNo").value = loaded.exam_no;
     }
     if (loaded.exam_type === "bep_sinav") {
-      onExamTypeChange();
+      onExamTypeChange(true);
     } else if (document.getElementById("examScenario") && loaded.scenario) {
       populateScenarioDropdown();
       document.getElementById("examScenario").value = loaded.scenario;
@@ -2115,13 +2607,16 @@ async function loadExamById(id) {
       document.getElementById("examQuestionCount").value = loaded.questions.length;
     }
 
+    syncHeaderOptionsUI();
     recalculateTotalPoints();
+    _isDraftDirty = false;
+    state.workspaceBannerMode = null;
     renderExamPages();
-    saveDraft(false);
+    syncWorkspaceStatusUI();
 
     // Otomatik Sınav Hazırlama Ekranına Geç
     switchView("exam_maker");
-    showToast(`"${loaded.title}" başarıyla yüklendi. Düzenleyebilirsiniz.`, "success");
+    showToast(`📂 "${loaded.title}" (Kayıt #${loaded.id}) arşivden yüklendi. Üzerinde değişiklik yaparsanız güncelleyebilir veya yeni sınav olarak kaydedebilirsiniz.`, "success");
   } catch (err) {
     showToast(err.message, "error");
   } finally {
@@ -3676,7 +4171,24 @@ function setupEventListeners() {
       if (state.currentExam) {
         state.currentExam.show_answer_lines = state.showAnswerLines;
       }
+      syncHeaderOptionsUI();
       renderExamPages();
+      saveDraft(false, true);
+    });
+  }
+
+  // Soru Altında Kazanım Bilgisi Aç/Kapa
+  const chkQuestionOutcomes = document.getElementById("chkShowQuestionOutcomes");
+  if (chkQuestionOutcomes) {
+    chkQuestionOutcomes.checked = (state.showQuestionOutcomes !== false);
+    chkQuestionOutcomes.addEventListener("change", (e) => {
+      state.showQuestionOutcomes = e.target.checked;
+      if (state.currentExam) {
+        state.currentExam.show_question_outcomes = state.showQuestionOutcomes;
+      }
+      syncHeaderOptionsUI();
+      renderExamPages();
+      saveDraft(false, true);
     });
   }
 
@@ -3689,7 +4201,9 @@ function setupEventListeners() {
       if (state.currentExam) {
         state.currentExam.show_scenario_in_header = state.showScenarioInHeader;
       }
+      syncHeaderOptionsUI();
       renderExamPages();
+      saveDraft(false, true);
     });
   }
 
@@ -3708,9 +4222,22 @@ function setupEventListeners() {
           show_bep_header: state.showBepInHeader
         };
       }
+      syncHeaderOptionsUI();
       renderExamPages();
+      saveDraft(false, true);
     });
   }
+
+  // Kağıt Görünüm Seçenekleri Combobox Dışına Tıklanınca Kapat
+  document.addEventListener("click", (e) => {
+    const comboContainer = document.getElementById("paperDisplayComboContainer");
+    const comboMenu = document.getElementById("paperDisplayComboMenu");
+    if (comboContainer && comboMenu && !comboMenu.classList.contains("hidden")) {
+      if (!comboContainer.contains(e.target)) {
+        comboMenu.classList.add("hidden");
+      }
+    }
+  });
 
   // 3 Ana Sekme
   document.getElementById("tabExamBtn")?.addEventListener("click", () => switchTab("exam"));
@@ -3751,13 +4278,23 @@ function debounce(func, delay) {
   };
 }
 
-function setLoading(loading, text = "Lütfen bekleyiniz...") {
+function setLoading(loading, text = "Lütfen bekleyiniz...", subtext = null) {
   state.isLoading = loading;
   const overlay = document.getElementById("loadingOverlay");
   const overlayText = document.getElementById("loadingText");
+  const overlaySubtext = document.getElementById("loadingSubtext");
   if (overlay) {
     if (loading) {
+      state.loadingStartedAt = Date.now();
       if (overlayText) overlayText.textContent = text;
+      if (overlaySubtext) {
+        const resolvedSub = subtext !== null
+          ? subtext
+          : (text.includes("soru") || text.includes("Sınav") || text.includes("MEB"))
+            ? "Türkiye Yüzyılı Maarif Modeli standartları uygulanıyor."
+            : "İşleminiz gerçekleştiriliyor, lütfen bekleyiniz...";
+        overlaySubtext.textContent = resolvedSub;
+      }
       overlay.classList.remove("hidden");
     } else {
       overlay.classList.add("hidden");

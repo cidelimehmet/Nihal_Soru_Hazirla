@@ -7,9 +7,27 @@ Sorularla birlikte kitap kaynağı, sayfa bilgisi, bilişsel düzey ve zorluk de
 import os
 import json
 import re
+import random
 from config import get_config
 from pdf_engine import extract_text_for_units
 from curriculum_data import load_curriculum_dict, get_units, get_scenarios_for
+from question_pools import (
+    GRADE_SPECIFIC_POOLS,
+    EXTRA_BEP_POOLS,
+    synthesize_dynamic_questions_for_units,
+    synthesize_dynamic_bep_questions_for_units
+)
+
+# Oturum boyunca sunulan soruların imzalarını tutarak art arda sınav hazırlamada aynı soruların gelmesini önler
+_RECENT_SERVED_SIGNATURES: dict[str, list[str]] = {}
+
+
+def _normalize_sig(text: str) -> str:
+    """Soru metnini karşılaştırma için normalize eder."""
+    if not text:
+        return ""
+    return re.sub(r"\s+", " ", str(text).strip().lower())
+
 
 SYSTEM_INSTRUCTION = """
 Sen, Millî Eğitim Bakanlığı (MEB) Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü ile Din Öğretimi Genel Müdürlüğü standartlarında uzmanlaşmış kıdemli bir İmam Hatip Ortaokulu Zümre Başkanısın.
@@ -81,14 +99,16 @@ def generate_questions_with_gemini(
     difficulty: str = "Dengeli",
     exam_type: str = "yazili_sinav",
     scenario_items: list[dict] | None = None,
-    bep_options: dict | None = None
+    bep_options: dict | None = None,
+    exclude_questions: list[str] | None = None
 ) -> dict:
-    """Gemini API veya akıllı yerel motor ile zenginleştirilmiş soruları üretir."""
+    """Gemini API veya akıllı yerel motor ile zenginleştirilmiş ve tekrarsız soruları üretir."""
     cfg = get_config()
     api_key = cfg.get("gemini_api_key", "").strip()
     curr = load_curriculum_dict()
     bep_opts = bep_options or {}
     is_bep = (exam_type == "bep_sinav")
+    exclude_list = [str(x).strip() for x in (exclude_questions or []) if str(x).strip()]
 
     # Eğer Özel/BEP senaryo değilse ve scenario_items boş gönderildiyse sistemdeki MEB senaryosundan otomatik çöz
     resolved_scenario_items = list(scenario_items) if scenario_items else []
@@ -119,6 +139,9 @@ def generate_questions_with_gemini(
 
     selected_units_objs = [u for u in all_units if u["id"] in selected_unit_ids] or all_units[:2]
     unit_names = [u["name"] for u in selected_units_objs]
+
+    history_key = f"{subject_id}_{grade}_{exam_type}"
+    recent_sigs = _RECENT_SERVED_SIGNATURES.get(history_key, [])
 
     scenario_prompt_block = ""
     if is_bep:
@@ -162,8 +185,20 @@ BU SINAV MEB ÖZEL EĞİTİM HİZMETLERİ YÖNETMELİĞİ KAPSAMINDA "BEP (BİRE
         else "Çoktan Seçmeli Yaprak Test"
     )
 
+    exclusion_prompt_block = ""
+    combined_exclude = list(dict.fromkeys(exclude_list + recent_sigs[-12:]))
+    if combined_exclude:
+        sample_excl = "\n".join(f"  - {q[:140]}..." for q in combined_exclude[:12])
+        exclusion_prompt_block = (
+            "\nSORU ÇEŞİTLİLİĞİ VE TEKRAR ÖNLEME KURALI:\n"
+            "Daha önce sorulan aşağıdaki soruları, örnek olayları veya cümleleri KESİNLİKLE TEKRAR ETME! "
+            "Tamamen farklı örnek olaylar, farklı isimler, farklı ayet/hadis örnekleri ve özgün bakış açıları kullan:\n"
+            f"{sample_excl}\n"
+        )
+
+    variation_seed = random.randint(1000, 9999)
     user_prompt = f"""
-Lütfen aşağıdaki parametrelere göre {question_count} adet soru hazırla:
+Lütfen aşağıdaki parametrelere göre {question_count} adet ÖZGÜN ve FARKLI soru hazırla (Varyasyon Kodu: #{variation_seed}):
 
 DERS: {subject_name}
 SINIF: {grade}. Sınıf
@@ -174,6 +209,7 @@ SORU SAYISI: {question_count}
 ZORLUK SEVİYESİ: {'Kolay (BEP Somut / Temel Düzey)' if is_bep else difficulty}
 KAPSAMDAKİ ÜNİTELER: {', '.join(unit_names)}
 {scenario_prompt_block}
+{exclusion_prompt_block}
 DERS KİTABINDAN ÇIKARILAN BÖLÜMLER:
 {book_context if book_context else 'Kitap konuları ve 2026 MEB Maarif Modeli kazanımları esas alınacaktır.'}
 
@@ -186,7 +222,7 @@ Her soru için kitap kaynağı, sayfa aralığı, bilişsel düzeyi, çözümü 
             from google.genai import types
             
             client = genai.Client(api_key=api_key)
-            preferred_model = cfg.get("gemini_model", "gemini-3.8-flash")
+            preferred_model = cfg.get("gemini_model", "gemini-2.5-flash")
             candidate_models = [preferred_model]
             for fallback_m in ["gemini-2.5-flash", "gemini-2.0-flash"]:
                 if fallback_m not in candidate_models:
@@ -200,7 +236,7 @@ Her soru için kitap kaynağı, sayfa aralığı, bilişsel düzeyi, çözümü 
                         config=types.GenerateContentConfig(
                             system_instruction=SYSTEM_INSTRUCTION,
                             response_mime_type="application/json",
-                            temperature=0.3
+                            temperature=0.75
                         )
                     )
                     text_resp = response.text.strip()
@@ -222,6 +258,10 @@ Her soru için kitap kaynağı, sayfa aralığı, bilişsel düzeyi, çözümü 
                                 ):
                                     bq["options"] = []
                         _normalize_points(data["questions"])
+                        for q in data["questions"]:
+                            sig = _normalize_sig(q.get("question_text", ""))
+                            if sig:
+                                _RECENT_SERVED_SIGNATURES.setdefault(history_key, []).append(sig)
                         return data
                 except Exception as inner_e:
                     print(f"Gemini model {model_name} attempt failed: {inner_e}")
@@ -231,12 +271,12 @@ Her soru için kitap kaynağı, sayfa aralığı, bilişsel düzeyi, çözümü 
 
     if is_bep:
         return _generate_bep_fallback_questions(
-            subject_id, grade, term, exam_no, question_count, selected_unit_ids, bep_opts
+            subject_id, grade, term, exam_no, question_count, selected_unit_ids, bep_opts, exclude_list
         )
             
-    # Yerel zengin ve branşa özel MEB 2026 soru kütüphanesi
+    # Yerel zengin, sınıf/ünite duyarlı ve tekrarı önleyen MEB 2026 soru motoru
     return _generate_fallback_questions(
-        subject_id, grade, term, exam_no, scenario, question_count, selected_unit_ids, exam_type, difficulty, resolved_scenario_items
+        subject_id, grade, term, exam_no, scenario, question_count, selected_unit_ids, exam_type, difficulty, resolved_scenario_items, book_context, exclude_list
     )
 
 def _normalize_points(questions: list):
@@ -260,7 +300,9 @@ def _generate_fallback_questions(
     selected_unit_ids: list[str],
     exam_type: str = "yazili_sinav",
     difficulty: str = "Dengeli",
-    scenario_items: list[dict] | None = None
+    scenario_items: list[dict] | None = None,
+    book_context: str = "",
+    exclude_questions: list[str] | None = None
 ) -> dict:
     curr = load_curriculum_dict()
     subject_name = curr.get(subject_id, {}).get("name", "Din Kültürü ve Ahlak Bilgisi")
@@ -884,19 +926,74 @@ def _generate_fallback_questions(
     ]
 
     if subject_id == "kuran":
-        active_pool = kuran_pool
+        general_pool = kuran_pool
     elif subject_id == "siyer":
-        active_pool = siyer_pool
+        general_pool = siyer_pool
     else:
-        active_pool = dkab_pool
+        general_pool = dkab_pool
 
-    # Zorluk filtresi seçildiyse önce ilgili zorluktakileri öne al
-    if difficulty in ("Kolay", "Orta", "Zor"):
-        matching = [q for q in active_pool if q.get("difficulty") == difficulty]
-        others = [q for q in active_pool if q.get("difficulty") != difficulty]
-        ordered_pool = matching + others
-    else:
-        ordered_pool = active_pool
+    grade_int = int(grade)
+    grade_curated = GRADE_SPECIFIC_POOLS.get(subject_id, {}).get(grade_int, [])
+    dynamic_unit_pool = synthesize_dynamic_questions_for_units(
+        subject_id=subject_id,
+        subject_name=subject_name,
+        grade=grade_int,
+        active_units=active_units,
+        scenario_items=scenario_items,
+        book_context=book_context,
+        is_test=is_test
+    )
+
+    # Soru bankasında öğretmen tarafından eklenen/düzenlenen aynı sınıf ve ders sorularını da havuza dahil et
+    bank_candidates = []
+    try:
+        import database
+        db_items = database.get_question_bank_items(subject=subject_id, grade=grade_int)
+        for db_q in db_items:
+            if str(db_q.get("question_type", "")).startswith("bep_"):
+                continue
+            if db_q.get("origin_type") == "teacher_edited":
+                bank_candidates.append(db_q)
+    except Exception:
+        pass
+
+    # Tüm aday havuzunu birleştir ve tekilleştir
+    candidate_pool = []
+    seen_sigs = set()
+
+    def _add_candidates(items_list, tier_name):
+        for it in items_list:
+            sig = _normalize_sig(it.get("question_text", ""))
+            if not sig or sig in seen_sigs:
+                continue
+            seen_sigs.add(sig)
+            cloned = dict(it)
+            cloned["_sig"] = sig
+            cloned["_tier"] = tier_name
+            candidate_pool.append(cloned)
+
+    _add_candidates(grade_curated, "grade_curated")
+    _add_candidates(bank_candidates, "bank")
+    _add_candidates(dynamic_unit_pool, "dynamic_unit")
+    _add_candidates(general_pool, "general")
+
+    # Hariç tutulacak (ekranda mevcut olan veya son sınavlarda gösterilen) soru imzaları
+    exclude_sigs = {_normalize_sig(t) for t in (exclude_questions or []) if _normalize_sig(t)}
+    history_key = f"{subject_id}_{grade_int}_{exam_type}"
+    recent_list = _RECENT_SERVED_SIGNATURES.setdefault(history_key, [])
+    recent_sigs = set(recent_list)
+
+    # Eğer taze (hiç gösterilmemiş) soru sayısı istenen soru adedinden azsa rotasyon geçmişini sıfırla
+    fresh_available = [
+        c for c in candidate_pool
+        if c["_sig"] not in exclude_sigs and c["_sig"] not in recent_sigs
+    ]
+    if len(fresh_available) < question_count:
+        recent_list.clear()
+        recent_sigs.clear()
+
+    # Havuzu her çağrıda rastgele karıştır (Deterministik tekrarı tamamen engeller)
+    random.shuffle(candidate_pool)
 
     # Senaryo kazanım dağılımı varsa her soru yuvasını (slot) ilgili kazanıma eşleştir
     expanded_slots = []
@@ -906,37 +1003,91 @@ def _generate_fallback_questions(
             for _ in range(cnt):
                 expanded_slots.append(sc_it)
 
+    active_unit_nos = set()
+    for u_idx, u in enumerate(all_units, 1):
+        if u["id"] in selected_unit_ids:
+            active_unit_nos.add(u_idx)
+
     used_pool_indices = set()
     selected = []
     for i in range(question_count):
         slot = expanded_slots[i] if i < len(expanded_slots) else None
 
-        # Havuzdan en uygun ve henüz kullanılmamış soruyu seç
-        best_idx = i % len(ordered_pool)
+        keywords = []
+        target_code = ""
+        target_unit_no = None
         if slot:
+            target_code = str(slot.get("outcome_code", "")).strip().lower()
+            if slot.get("unit_no"):
+                target_unit_no = int(slot.get("unit_no", 1))
             keywords = [
                 w.lower()
                 for w in re.findall(r"\w+", f"{slot.get('unit_title', '')} {slot.get('outcome_description', '')}")
                 if len(w) > 3
             ]
-            best_score = -1
-            for p_idx, cand in enumerate(ordered_pool):
-                if p_idx in used_pool_indices and len(used_pool_indices) < len(ordered_pool):
-                    continue
-                haystack = f"{cand.get('learning_outcome', '')} {cand.get('question_text', '')} {cand.get('source_context', '')}".lower()
-                score = sum(1 for kw in keywords if kw in haystack)
-                if score > best_score:
-                    best_score = score
-                    best_idx = p_idx
-        else:
-            for p_idx in range(len(ordered_pool)):
-                cand_idx = (i + p_idx) % len(ordered_pool)
-                if cand_idx not in used_pool_indices:
-                    best_idx = cand_idx
-                    break
+
+        best_idx = 0
+        best_score = -999999.0
+
+        for p_idx, cand in enumerate(candidate_pool):
+            if p_idx in used_pool_indices and len(used_pool_indices) < len(candidate_pool):
+                continue
+
+            sig = cand["_sig"]
+            score = 0.0
+
+            # 1) Ekranda olan veya yakın zamanda gösterilen soruları güçlü biçimde geri plana at
+            if sig in exclude_sigs:
+                score -= 10000.0
+            if sig in recent_sigs:
+                score -= 2500.0
+
+            # Aynı sınav kağıdı içinde aynı cümle kalıbıyla başlayan iki soru olmasını engelle
+            cand_prefix = sig[:28]
+            if any(_normalize_sig(sel_q.get("question_text", ""))[:28] == cand_prefix for sel_q in selected):
+                score -= 500.0
+
+            # 2) Sınıf ve ünite uyumu puanı
+            tier = cand.get("_tier", "general")
+            if tier == "grade_curated":
+                score += 24.0
+            elif tier == "bank":
+                score += 22.0
+            elif tier == "dynamic_unit":
+                score += 20.0
+            else:
+                score += 10.0
+
+            # 3) Zorluk uyumu
+            if difficulty in ("Kolay", "Orta", "Zor") and cand.get("difficulty") == difficulty:
+                score += 12.0
+
+            # 4) Senaryo kazanımı veya seçili ünite uyumu
+            cand_outcome = str(cand.get("learning_outcome", "")).lower()
+            cand_unit_no = cand.get("unit_no")
+            if slot:
+                if target_code and target_code in cand_outcome:
+                    score += 35.0
+                if target_unit_no and cand_unit_no == target_unit_no:
+                    score += 20.0
+                if keywords:
+                    haystack = f"{cand_outcome} {cand.get('question_text', '')} {cand.get('source_context', '')}".lower()
+                    kw_hits = sum(1 for kw in keywords if kw in haystack)
+                    score += min(kw_hits * 4.5, 25.0)
+            else:
+                if cand_unit_no and active_unit_nos and cand_unit_no in active_unit_nos:
+                    score += 18.0
+
+            # 5) Çeşitlilik jitter'ı: Aynı kazanımdaki alternatif soruların her tıklamada dönüşümlü gelmesini sağlar
+            score += random.uniform(0.0, 14.0)
+
+            if score > best_score:
+                best_score = score
+                best_idx = p_idx
 
         used_pool_indices.add(best_idx)
-        raw = ordered_pool[best_idx]
+        raw = candidate_pool[best_idx]
+        recent_list.append(raw["_sig"])
 
         # Ünite ve sayfa aralığını belirle
         unit_obj = None
@@ -944,22 +1095,33 @@ def _generate_fallback_questions(
             u_no = int(slot.get("unit_no", 1))
             if 1 <= u_no <= len(all_units):
                 unit_obj = all_units[u_no - 1]
+        elif raw.get("unit_no") and 1 <= int(raw["unit_no"]) <= len(all_units):
+            unit_obj = all_units[int(raw["unit_no"]) - 1]
         if not unit_obj:
             unit_obj = active_units[i % len(active_units)] if active_units else None
 
-        unit_page_str = raw["source_page"]
-        unit_name_str = slot.get("unit_title", "") if slot else ""
+        unit_page_str = raw.get("source_page", "İlgili Ünite")
+        unit_name_str = slot.get("unit_title", "") if slot else raw.get("unit_name", "")
         if unit_obj:
             unit_name_str = unit_obj.get("name", unit_name_str)
             pr = unit_obj.get("page_range")
             if pr and len(pr) == 2:
                 unit_page_str = f"Sayfa {pr[0]}-{pr[1]} ({unit_name_str})"
 
-        outcome_str = raw["learning_outcome"]
+        outcome_str = raw.get("learning_outcome", "")
         if slot and (slot.get("outcome_code") or slot.get("outcome_description")):
             code = slot.get("outcome_code", "").strip()
             desc = slot.get("outcome_description", "").strip()
             outcome_str = f"[{code}] {desc}" if code else desc
+
+        opts = list(raw.get("options", []))
+        if is_test and not opts:
+            opts = [
+                "A) Doğru bilgi ve güzel ahlak ilkelerine uygun hareket etmek",
+                "B) Sorumlulukları ertelemek",
+                "C) Yalnızca bireysel çıkarları gözetmek",
+                "D) Toplumsal kuralları dikkate almamak"
+            ]
 
         item = {
             "q_order": i + 1,
@@ -967,18 +1129,22 @@ def _generate_fallback_questions(
             "unit_name": unit_name_str,
             "learning_outcome": outcome_str,
             "question_type": q_type,
-            "cognitive_level": raw["cognitive_level"],
-            "difficulty": difficulty if difficulty in ("Kolay", "Orta", "Zor") else raw["difficulty"],
+            "cognitive_level": raw.get("cognitive_level", "Analiz"),
+            "difficulty": difficulty if difficulty in ("Kolay", "Orta", "Zor") else raw.get("difficulty", "Orta"),
             "source_book": book_name,
             "source_page": unit_page_str,
-            "source_context": raw["source_context"],
-            "arabic_text": raw["arabic_text"],
-            "question_text": raw["question_text"],
-            "options": raw["options"] if is_test else [],
-            "answer_text": raw["answer_text"],
-            "rubric": raw["rubric"]
+            "source_context": raw.get("source_context", ""),
+            "arabic_text": raw.get("arabic_text", ""),
+            "question_text": raw.get("question_text", ""),
+            "options": opts if is_test else [],
+            "answer_text": raw.get("answer_text", ""),
+            "rubric": raw.get("rubric", [{"criterion": "Doğru ve gerekçeli açıklama", "points": 10}])
         }
         selected.append(item)
+
+    # Geçmiş listesini aşırı büyümemesi için son 45 soruyla sınırla
+    if len(recent_list) > 45:
+        del recent_list[:-45]
 
     _normalize_points(selected)
     return {"questions": selected}
@@ -991,7 +1157,8 @@ def _generate_bep_fallback_questions(
     exam_no: str,
     question_count: int,
     selected_unit_ids: list[str],
-    bep_opts: dict | None = None
+    bep_opts: dict | None = None,
+    exclude_questions: list[str] | None = None
 ) -> dict:
     """
     MEB Özel Eğitim Hizmetleri Yönetmeliği ve Ölçme Değerlendirme Yönergesi'ne tam uyumlu
@@ -1421,16 +1588,83 @@ def _generate_bep_fallback_questions(
     ]
 
     if subject_id == "kuran":
-        base_pool = kuran_bep_pool
+        base_pool = list(kuran_bep_pool)
     elif subject_id == "siyer":
-        base_pool = siyer_bep_pool
+        base_pool = list(siyer_bep_pool)
     else:
-        base_pool = dkab_bep_pool
+        base_pool = list(dkab_bep_pool)
 
-    # Eğer öğretmen sadece 3 seçenekli test veya sadece eşleştirme/D-Y/boşluk doldurma seçtiyse filtrele/uyarla
+    extra_pool = EXTRA_BEP_POOLS.get(subject_id, [])
+    dynamic_bep_pool = synthesize_dynamic_bep_questions_for_units(
+        subject_id=subject_id,
+        subject_name=subject_name,
+        grade=int(grade),
+        active_units=active_units
+    )
+
+    combined_bep_candidates = []
+    seen_sigs = set()
+    for q_cand in (base_pool + extra_pool + dynamic_bep_pool):
+        sig = _normalize_sig(q_cand.get("question_text", ""))
+        if not sig or sig in seen_sigs:
+            continue
+        seen_sigs.add(sig)
+        c_copy = dict(q_cand)
+        c_copy["_sig"] = sig
+        combined_bep_candidates.append(c_copy)
+
+    exclude_sigs = {_normalize_sig(t) for t in (exclude_questions or []) if _normalize_sig(t)}
+    history_key = f"{subject_id}_{int(grade)}_bep_sinav"
+    recent_list = _RECENT_SERVED_SIGNATURES.setdefault(history_key, [])
+    recent_sigs = set(recent_list)
+
+    fresh_bep = [
+        c for c in combined_bep_candidates
+        if c["_sig"] not in exclude_sigs and c["_sig"] not in recent_sigs
+    ]
+    if len(fresh_bep) < question_count:
+        recent_list.clear()
+        recent_sigs.clear()
+
+    random.shuffle(combined_bep_candidates)
+
+    # Karma modda her soru tipinden (eşleştirme, D/Y, boşluk doldurma, 3 şıklı) dengeli gelmesi için hedef sıra
+    karma_type_cycle = ["bep_eslestirme", "bep_dogru_yanlis", "bep_bosluk_doldurma", "bep_coktan_secmeli_3"]
+    used_indices = set()
     selected = []
+
     for i in range(question_count):
-        raw = base_pool[i % len(base_pool)]
+        preferred_type = karma_type_cycle[i % len(karma_type_cycle)] if q_style == "karma" else None
+        best_idx = 0
+        best_score = -999999.0
+
+        for idx, cand in enumerate(combined_bep_candidates):
+            if idx in used_indices and len(used_indices) < len(combined_bep_candidates):
+                continue
+            sig = cand["_sig"]
+            score = 0.0
+            if sig in exclude_sigs:
+                score -= 10000.0
+            if sig in recent_sigs:
+                score -= 2500.0
+
+            c_type = cand.get("question_type", "")
+            if q_style == "coktan_secmeli_3" and c_type == "bep_coktan_secmeli_3":
+                score += 25.0
+            elif q_style == "eslestirme_dy_bosluk" and c_type in ("bep_eslestirme", "bep_dogru_yanlis", "bep_bosluk_doldurma"):
+                score += 25.0
+            elif preferred_type and c_type == preferred_type:
+                score += 30.0
+
+            score += random.uniform(0.0, 12.0)
+            if score > best_score:
+                best_score = score
+                best_idx = idx
+
+        used_indices.add(best_idx)
+        raw = combined_bep_candidates[best_idx]
+        recent_list.append(raw["_sig"])
+
         unit_obj = active_units[i % len(active_units)] if active_units else None
         unit_name_str = unit_obj.get("name", "Temel BEP Ünitesi") if unit_obj else "Temel BEP Ünitesi"
         unit_page_str = raw["source_page"]
@@ -1447,12 +1681,10 @@ def _generate_bep_fallback_questions(
             q_type = "bep_coktan_secmeli_3"
             opts = opts[:3] if opts else ["A) Doğru Seçenek", "B) İkinci Seçenek", "C) Üçüncü Seçenek"]
         elif q_style == "eslestirme_dy_bosluk":
-            # Sadece yapılandırılmış etkinlik/boşluk/eşleştirme/D-Y olarak göster, şıkları gizle
             if q_type == "bep_coktan_secmeli_3":
                 q_type = "bep_kisa_cevap"
             opts = []
         else:
-            # Karma modda: sadece bep_coktan_secmeli_3 olanlarda 3 şıkkı göster, diğerlerinde (eşleştirme, D/Y, boşluk doldurma) soru metni kendi içinde tablo/boşluk barındırdığı için şıkları boş bırak
             if q_type != "bep_coktan_secmeli_3":
                 opts = []
 
@@ -1471,9 +1703,12 @@ def _generate_bep_fallback_questions(
             "question_text": raw["question_text"],
             "options": opts,
             "answer_text": raw["answer_text"],
-            "rubric": raw["rubric"]
+            "rubric": [dict(r) for r in raw.get("rubric", [{"criterion": "Doğru işaretleme / cevap", "points": 20}])]
         }
         selected.append(item)
+
+    if len(recent_list) > 40:
+        del recent_list[:-40]
 
     _normalize_points(selected)
     # Rubrik puanlarını da soru puanına eşitle (BEP net puanlama ilkesi: örn. 4x25p veya 5x20p)

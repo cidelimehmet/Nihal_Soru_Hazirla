@@ -92,12 +92,18 @@ def generate_exam_docx(exam_data: dict, layout: str = "2_column") -> Path:
     total_points = exam_data.get("total_points", 100)
     show_scenario_in_header = exam_data.get("show_scenario_in_header", True)
     show_answer_lines = exam_data.get("show_answer_lines", True)
+    show_question_outcomes = exam_data.get("show_question_outcomes", True)
     bep_opts = exam_data.get("bep_options") or (header_info.get("bep_options") if isinstance(header_info, dict) else {}) or {}
     is_bep = (exam_type == "bep_sinav")
 
-    # MEB BEP Yönetmeliği: BEP sınavları her zaman TEK SÜTUN olmak zorundadır
-    if is_bep:
+    # Kullanıcının seçtiği düzeni koru; belirtilmemişse BEP'te 1_column, standartta 2_column kullan
+    effective_layout = layout or exam_data.get("layout")
+    if effective_layout in ("1_column", "1", "tek_sutun", "single"):
         layout = "1_column"
+    elif effective_layout in ("2_column", "2", "iki_sutun", "double"):
+        layout = "2_column"
+    else:
+        layout = "1_column" if is_bep else "2_column"
 
     if is_bep:
         show_bep_hdr = bep_opts.get("show_bep_header", True)
@@ -244,8 +250,18 @@ def generate_exam_docx(exam_data: dict, layout: str = "2_column") -> Path:
                 r_pts.font.color.rgb = RGBColor(100, 100, 100)
                 r_pts.font.name = "Arial"
                 
-                p_q.paragraph_format.space_after = Pt(2)
+                p_q.paragraph_format.space_after = Pt(1 if show_question_outcomes else 2)
                 p_q.paragraph_format.line_spacing = 1.15
+
+                lo_txt = (q.get("learning_outcome") or "").strip()
+                if show_question_outcomes and lo_txt:
+                    p_lo = cell.add_paragraph()
+                    p_lo.paragraph_format.space_after = Pt(2)
+                    r_lo = p_lo.add_run(f"Kazanım: {lo_txt}")
+                    r_lo.italic = True
+                    r_lo.font.size = Pt(7.5)
+                    r_lo.font.color.rgb = RGBColor(100, 116, 139)
+                    r_lo.font.name = "Arial"
                 
                 ar_txt = (q.get("arabic_text") or "").strip()
                 if ar_txt:
@@ -315,6 +331,16 @@ def generate_exam_docx(exam_data: dict, layout: str = "2_column") -> Path:
             r_pts.font.size = Pt(badge_pt - 1)
             r_pts.font.color.rgb = RGBColor(30, 58, 138) if is_bep else RGBColor(100, 100, 100)
             r_pts.font.name = "Arial"
+
+            lo_txt = (q.get("learning_outcome") or "").strip()
+            if show_question_outcomes and lo_txt:
+                p_lo = doc.add_paragraph()
+                p_lo.paragraph_format.space_after = Pt(1.5)
+                r_lo = p_lo.add_run(f"Kazanım: {lo_txt}")
+                r_lo.italic = True
+                r_lo.font.size = Pt(8 if is_bep else 7.5)
+                r_lo.font.color.rgb = RGBColor(100, 116, 139)
+                r_lo.font.name = "Arial"
             
             ar_txt = (q.get("arabic_text") or "").strip()
             if ar_txt:

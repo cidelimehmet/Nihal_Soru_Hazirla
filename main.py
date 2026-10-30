@@ -67,6 +67,7 @@ class GenerateExamRequest(BaseModel):
     difficulty: str = "Dengeli"
     scenario_items: list[dict] = []
     bep_options: dict = {}
+    exclude_questions: list[str] = []
 
 class SingleQuestionRegenRequest(BaseModel):
     subject: str
@@ -77,6 +78,8 @@ class SingleQuestionRegenRequest(BaseModel):
     selected_units: list[str] = []
     exam_type: str = "yazili_sinav"
     bep_options: dict = {}
+    exclude_questions: list[str] = []
+    scenario_items: list[dict] = []
 
 class SaveExamRequest(BaseModel):
     id: int | None = None
@@ -92,6 +95,9 @@ class SaveExamRequest(BaseModel):
     questions: list
     header_info: dict = {}
     bep_options: dict = {}
+    show_answer_lines: bool = True
+    show_question_outcomes: bool = True
+    show_scenario_in_header: bool = True
 
 class BankGenerateRequest(BaseModel):
     subject: str
@@ -265,15 +271,25 @@ async def api_generate_exam(req: GenerateExamRequest):
             difficulty=req.difficulty,
             exam_type=req.exam_type,
             scenario_items=req.scenario_items,
-            bep_options=req.bep_options
+            bep_options=req.bep_options,
+            exclude_questions=req.exclude_questions
         )
-        return {"status": "success", "data": data}
+        # Her denemede üretilen soruları otomatik olarak Soru Bankasına (tekrarsız) ekle
+        bank_added_count = 0
+        for q in data.get("questions", []):
+            q_copy = dict(q)
+            q_copy["subject"] = req.subject
+            q_copy["grade"] = req.grade
+            bank_id = database.add_question_to_bank(q_copy)
+            q["question_bank_id"] = bank_id
+            bank_added_count += 1
+        return {"status": "success", "data": data, "bank_synced_count": bank_added_count}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Soru hazırlama hatası: {str(e)}")
 
 @app.post("/api/regenerate-question")
 async def api_regenerate_question(req: SingleQuestionRegenRequest):
-    """Tek bir soruyu yeniden üretir."""
+    """Tek bir soruyu mevcut soruları hariç tutarak yeniden üretir."""
     try:
         is_bep = (req.exam_type == "bep_sinav")
         data = generate_questions_with_gemini(
@@ -282,17 +298,24 @@ async def api_regenerate_question(req: SingleQuestionRegenRequest):
             term=req.term,
             exam_no=req.exam_no,
             scenario="BEP Bireysel Kazanım" if is_bep else "Özel",
-            question_count=6 if is_bep else 1,
+            question_count=4 if is_bep else 1,
             selected_unit_ids=req.selected_units,
             difficulty="Kolay" if is_bep else "Dengeli",
             exam_type=req.exam_type,
-            bep_options=req.bep_options
+            scenario_items=req.scenario_items,
+            bep_options=req.bep_options,
+            exclude_questions=req.exclude_questions
         )
         if data.get("questions"):
             q_list = data["questions"]
-            pick_idx = (req.q_order - 1) % len(q_list)
+            pick_idx = (req.q_order - 1) % len(q_list) if is_bep else 0
             q = q_list[pick_idx]
             q["q_order"] = req.q_order
+            # Tekil yenilemede üretilen soruyu da otomatik olarak Soru Bankasına ekle
+            q_copy = dict(q)
+            q_copy["subject"] = req.subject
+            q_copy["grade"] = req.grade
+            q["question_bank_id"] = database.add_question_to_bank(q_copy)
             return {"status": "success", "question": q}
         raise HTTPException(status_code=500, detail="Soru üretilemedi.")
     except Exception as e:

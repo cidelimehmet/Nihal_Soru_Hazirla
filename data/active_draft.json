@@ -1,140 +1,276 @@
 {
   "id": null,
-  "title": "7. Sınıf Din Kültürü ve Ahlak Bilgisi 1. Dönem Mazeret Sınavı (BEP Kapsamındaki Öğrenci Sınavı)",
-  "exam_type": "bep_sinav",
+  "title": "8. Sınıf Din Kültürü ve Ahlak Bilgisi 1. Dönem 1. Yazılı",
+  "exam_type": "yazili_sinav",
   "subject": "dkab",
   "subject_name": "Din Kültürü ve Ahlak Bilgisi",
-  "grade": 7,
+  "grade": 8,
   "term": "1. Dönem",
-  "exam_no": "Mazeret Sınavı",
-  "scenario": "BEP Bireysel Kazanım",
-  "layout": "1_column",
+  "exam_no": "1. Yazılı",
+  "scenario": "Özel",
+  "layout": "2_column",
   "show_answer_lines": true,
   "show_scenario_in_header": true,
-  "bep_options": {
-    "font_size": "13pt",
-    "question_style": "karma",
-    "accommodation": "ek_sure",
-    "custom_outcomes": "",
-    "show_bep_header": false
-  },
+  "bep_options": {},
   "total_points": 100,
   "questions": [
     {
       "q_order": 1,
-      "points": 20,
-      "unit_name": "1. Ünite: Melek ve Ahiret İnancı",
-      "learning_outcome": "[BEP.DKAB.1] Allah'ın güzel isimlerini (Esmaü'l-Hüsna) temel anlamlarıyla eşleştirir.",
-      "question_type": "bep_eslestirme",
-      "cognitive_level": "Hatırlama / Kavrama (BEP)",
-      "difficulty": "Kolay",
-      "source_book": "7. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı (BEP Uyarlamalı)",
-      "source_page": "Sayfa 11-48 (1. Ünite: Melek ve Ahiret İnancı - BEP Uyarlaması)",
-      "source_context": "BEP Kavram Sadeleştirme: Yüce Allah'ın güzel isimleri (Semi, Basir, Rahman, Alim) somut anlamlarıyla eşleştirilir.",
+      "points": 10,
+      "unit_name": "2. Ünite: Zekât ve Sadaka (LGS Odaklı)",
+      "learning_outcome": "[DKAB.8.2.2] Zekâtın nisap miktarını, verileceği malları/oranları ve kimlere verileceğini (Tevbe 60) açıklar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Uygulama",
+      "difficulty": "Zor",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 41-72 (2. Ünite: Zekât ve Sadaka (LGS Odaklı))",
+      "source_context": "Nisap miktarı (85 gr altın vb.), zekât oranları (1/40, 1/10, 1/20, 1/30) ve Tevbe Suresi 60. ayetteki 8 sınıf.",
       "arabic_text": "",
-      "question_text": "Aşağıda verilen Yüce Allah'ın güzel isimlerini (Esmaü'l-Hüsna) karşısındaki doğru anlamlarıyla ok çizerek eşleştiriniz:\n1) Semî  .....................  ( a ) Her şeyi gören\n2) Basîr .....................  ( b ) Her şeyi işiten\n3) Rahmân ....................  ( c ) Bütün canlılara merhamet eden\n4) Alîm  .....................  ( d ) Her şeyi çok iyi bilen",
+      "question_text": "Zekât ibadetinde 'Nisap Miktarı' ne demektir? Altın, nakit para ve ticaret mallarında zekât oranı kaçtır ve İslam'a göre bir kimse yakın akrabalarından hangilerine zekât VEREMEZ? Açıklayınız.",
       "options": [],
-      "answer_text": "1) Semî -> (b) Her şeyi işiten | 2) Basîr -> (a) Her şeyi gören | 3) Rahmân -> (c) Bütün canlılara merhamet eden | 4) Alîm -> (d) Her şeyi çok iyi bilen",
+      "answer_text": "Nisap: Temel ihtiyaçlar ve borçlar dışında dinen belirlenen asgari zenginlik ölçüsüdür (altında 85 gram). Altın, gümüş, nakit para ve ticaret mallarında zekât oranı 1/40 (%2,5) kadardır. Kişi bakmakla yükümlü olduğu usul (anne, baba, dede, nine), füru (çocuklar, torunlar) ve eşine zekât veremez.",
       "rubric": [
         {
-          "criterion": "Her doğru eşleştirme için eşit puan verilir (Yazım veya çizgi hatasından puan kırılmaz)",
-          "points": 20
+          "criterion": "Nisap kavramının ve altın/para zekât oranının (1/40 veya %2,5) doğru yazılması",
+          "points": 5
+        },
+        {
+          "criterion": "Zekât verilemeyecek yakın akrabaların (anne-baba, dede-nine, çocuklar, torunlar, eş) belirtilmesi",
+          "points": 5
         }
       ]
     },
     {
       "q_order": 2,
-      "points": 20,
-      "unit_name": "2. Ünite: Hac ve Kurban",
-      "learning_outcome": "[BEP.DKAB.2] İslam'da paylaşma ve yardımlaşma ibadetlerini (Zekât ve Sadaka) tanır.",
-      "question_type": "bep_coktan_secmeli_3",
-      "cognitive_level": "Kavrama (BEP)",
-      "difficulty": "Kolay",
-      "source_book": "7. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı (BEP Uyarlamalı)",
-      "source_page": "Sayfa 49-90 (2. Ünite: Hac ve Kurban - BEP Uyarlaması)",
-      "source_context": "BEP 3 Seçenekli Çoktan Seçmeli: Fıkhi hesaplamalar yerine zekât ibadetinin temel ve somut tanımı sorulur.",
-      "arabic_text": "",
-      "question_text": "Aç ve yoksul insanlara yardım etmek amacıyla zengin Müslümanların yılda bir kez verdiği zorunlu yardıma ne ad verilir? Doğru olanı işaretleyiniz.",
-      "options": [
-        "A) Zekât",
-        "B) Oruç",
-        "C) Namaz"
-      ],
-      "answer_text": "Doğru Seçenek: A) Zekât",
+      "points": 10,
+      "unit_name": "1. Ünite: Kader İnancı (LGS Odaklı)",
+      "learning_outcome": "[DKAB.8.1.6] Ayet el-Kürsi'yi okur ve içerdiği tevhid/kudret mesajlarını yorumlar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Yorumlama",
+      "difficulty": "Orta",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 11-40 (1. Ünite: Kader İnancı (LGS Odaklı))",
+      "source_context": "Bakara Suresi 255. ayet (Ayet el-Kürsi) Allah'ın Hayy, Kayyum, Aliyy ve Azim sıfatlarını ve eşsiz kudretini anlatır.",
+      "arabic_text": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ",
+      "question_text": "Bakara Suresi 255. ayet olan Ayet el-Kürsi'de geçen 'el-Hayy' ve 'el-Kayyûm' isimlerinin anlamlarını yazarak, ayette Yüce Allah'ın ilmi ve kudreti hakkında verilen mesajlardan 3 tanesini belirtiniz.",
+      "options": [],
+      "answer_text": "el-Hayy: Daima diri olan, hayatın kaynağı olan; el-Kayyûm: Evreni kendi kudretiyle ayakta tutan ve yönetendir. Mesajları: 1) Allah'tan başka ilah yoktur (Tevhid), 2) O'nu ne uyuklama ne de uyku tutar, 3) Göklerde ve yerde olan her şey O'nundur ve izni olmadan kimse şefaat edemez.",
       "rubric": [
         {
-          "criterion": "A seçeneğinin (Zekât) doğru işaretlenmesi veya belirtilmesi",
-          "points": 20
+          "criterion": "el-Hayy ve el-Kayyûm sıfatlarının doğru açıklanması",
+          "points": 5
+        },
+        {
+          "criterion": "Ayet el-Kürsi'deki tevhid, ilim ve kudret mesajlarından en az üçünün yazılması",
+          "points": 5
         }
       ]
     },
     {
       "q_order": 3,
-      "points": 20,
-      "unit_name": "3. Ünite: Ahlaki Davranışlar",
-      "learning_outcome": "[BEP.DKAB.3] Temel inanç ve ibadet kavramlarını kelime havuzundan seçerek tamamlar.",
-      "question_type": "bep_bosluk_doldurma",
-      "cognitive_level": "Uygulama (BEP)",
-      "difficulty": "Kolay",
-      "source_book": "7. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı (BEP Uyarlamalı)",
-      "source_page": "Sayfa 91-132 (3. Ünite: Ahlaki Davranışlar - BEP Uyarlaması)",
-      "source_context": "BEP Kelime Havuzu Desteği: Öğrencinin kavramları sıfırdan hatırlaması yerine kutucuktaki kelimelerden seçip yerleştirmesi sağlanır.",
-      "arabic_text": "",
-      "question_text": "📦 KELİME HAVUZU:  [  Tevhid   |   Tevekkül   |   Ramazan   |   Kâbe  ]\nYukarıdaki kutucukta verilen kelimelerden uygun olanları aşağıdaki boşluklara yazınız:\n1) Allah'ın bir ve tek olmasına .................................... inancı denir.\n2) Bir işi yaparken bütün önlemleri alıp çalıştıktan sonra Allah'a güvenmeye .................................... denir.\n3) Müslümanların oruç tuttuğu mübarek ayın adı .................................... ayıdır.\n4) Namaz kılarken yöneldiğimiz kutsal mekân ....................................'dir.",
+      "points": 10,
+      "unit_name": "1. Ünite: Kader İnancı (LGS Odaklı)",
+      "learning_outcome": "[DKAB.8.1.2] İnsanın cüz'i iradesi, külli irade ve sorumluluk arasındaki ilişkiyi analiz eder.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Analiz",
+      "difficulty": "Orta",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 11-40 (1. Ünite: Kader İnancı (LGS Odaklı))",
+      "source_context": "Külli irade Allah'ın sınırsız iradesidir; cüz'i irade ise insana verilen seçme özgürlüğüdür ve sorumluluğun temelidir.",
+      "arabic_text": "إِنَّا هَدَيْنَاهُ السَّبِيلَ إِمَّا شَاكِرًا وَإِمَّا كَفُورًا",
+      "question_text": "'Şüphesiz biz ona (insana) doğru yolu gösterdik; ister şükredici olsun ister nankör.' (İnsan, 3) ayetini 'Külli İrade', 'Cüz'i İrade' ve 'İnsanın Sorumluluğu' kavramları çerçevesinde analiz ediniz.",
       "options": [],
-      "answer_text": "1) Tevhid  —  2) Tevekkül  —  3) Ramazan  —  4) Kâbe",
+      "answer_text": "Yüce Allah Külli İradesi (sınırsız iradesi) ile insana iyi ve kötüyü ayırt edebileceği akıl ve Cüz'i İrade (seçme özgürlüğü) vermiş, kitap ve peygamberlerle doğru yolu göstermiştir. İnsan özgür iradesiyle yaptığı tercihlerden dolayı dünyada ve ahirette sorumludur.",
       "rubric": [
         {
-          "criterion": "Kelime havuzundaki her bir kavramın doğru boşluğa yazılması (Yazım hatalarından puan kırılmaz)",
-          "points": 20
+          "criterion": "Külli irade ve cüz'i irade kavramlarının doğru tanımlanması",
+          "points": 5
+        },
+        {
+          "criterion": "Seçme özgürlüğü ile sorumluluk arasındaki ilişkinin ayetle açıklanması",
+          "points": 5
         }
       ]
     },
     {
       "q_order": 4,
-      "points": 20,
-      "unit_name": "4. Ünite: İslam Düşüncesinde Yorumlar",
-      "learning_outcome": "[BEP.DKAB.4] Doğru ve yanlış dini/ahlaki bilgileri ayırt eder.",
-      "question_type": "bep_dogru_yanlis",
-      "cognitive_level": "Kavrama (BEP)",
-      "difficulty": "Kolay",
-      "source_book": "7. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı (BEP Uyarlamalı)",
-      "source_page": "Sayfa 133-172 (4. Ünite: İslam Düşüncesinde Yorumlar - BEP Uyarlaması)",
-      "source_context": "BEP Doğru/Yanlış Desteği: Günlük yaşamla bağdaşan somut dini ve ahlaki ilkeler D/Y formatında yoklanır.",
+      "points": 10,
+      "unit_name": "1. Ünite: Kader İnancı (LGS Odaklı)",
+      "learning_outcome": "[DKAB.8.8.3] 1. Ünite: Kader İnancı (LGS Odaklı) kapsamında 'İnsanın İradesi ve Kader' konusunu analiz eder ve yorumlar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Değerlendirme",
+      "difficulty": "Zor",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 11-40 (1. Ünite: Kader İnancı (LGS Odaklı))",
+      "source_context": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı Sayfa 11-40 (1. Ünite: Kader İnancı (LGS Odaklı)) aralığında 'İnsanın İradesi ve Kader' ve 'Ömür, Ecel, Tevekkül, Rızık, Sağlık ve Başarı' konuları örneklerle ele alınmaktadır.",
       "arabic_text": "",
-      "question_text": "Aşağıdaki cümlelerin başına bilgi doğru ise ( D ), yanlış ise ( Y ) yazınız:\n( ..... ) İslam dini temizliğe, doğruluğa ve yardımlaşmaya büyük önem verir.\n( ..... ) Günde beş vakit kılınan farz ibadetimiz namazdır.\n( ..... ) Başkalarının eşyasını izinsiz almak doğru bir davranıştır.\n( ..... ) Evrendeki her şey Yüce Allah tarafından bir ölçü ve düzen içinde yaratılmıştır.",
+      "question_text": "1. Ünite: Kader İnancı (LGS Odaklı) ünitesinde yer alan 'İnsanın İradesi ve Kader' başlığında vurgulanan temel ilkeler nelerdir? Maddeler halinde yazarak bir örnekle açıklayınız.",
       "options": [],
-      "answer_text": "1) ( D ) Doğru  |  2) ( D ) Doğru  |  3) ( Y ) Yanlış  |  4) ( D ) Doğru",
+      "answer_text": "'İnsanın İradesi ve Kader' konusu, 1. Ünite: Kader İnancı (LGS Odaklı) ünitesinin temel kazanımlarından biridir. Bireyin konuyu doğru anlaması, hem ibadet/ahlak bilincini geliştirir hem de 'Ömür, Ecel, Tevekkül, Rızık, Sağlık ve Başarı' ilkesiyle bütünleşerek örnek bir yaşam sürmesini sağlar.",
       "rubric": [
         {
-          "criterion": "Her doğru (D/Y) işaretlemesi için tam puan verilir",
-          "points": 20
+          "criterion": "'İnsanın İradesi ve Kader' kavramının/konusunun doğru tanımlanıp açıklanması",
+          "points": 5
+        },
+        {
+          "criterion": "Örnek olay veya günlük yaşam bağlantısının doğru kurulması",
+          "points": 5
         }
       ]
     },
     {
       "q_order": 5,
-      "points": 20,
-      "unit_name": "5. Ünite: Din, Kültür ve Sanat",
-      "learning_outcome": "[BEP.DKAB.5] İslam'ın ve İmanın temel şartlarını ayırt eder.",
-      "question_type": "bep_coktan_secmeli_3",
-      "cognitive_level": "Hatırlama (BEP)",
-      "difficulty": "Kolay",
-      "source_book": "7. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı (BEP Uyarlamalı)",
-      "source_page": "Sayfa 173-204 (5. Ünite: Din, Kültür ve Sanat - BEP Uyarlaması)",
-      "source_context": "BEP 3 Seçenekli Çoktan Seçmeli: Peygamberlere ve kutsal kitaplara iman kavramı sade bir soru köküyle sorulur.",
+      "points": 10,
+      "unit_name": "2. Ünite: Zekât ve Sadaka (LGS Odaklı)",
+      "learning_outcome": "[DKAB.8.8.4] 1. Ünite: Kader İnancı (LGS Odaklı) kapsamında 'Ömür, Ecel, Tevekkül, Rızık, Sağlık ve Başarı' konusunu analiz eder ve yorumlar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Uygulama",
+      "difficulty": "Orta",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 41-72 (2. Ünite: Zekât ve Sadaka (LGS Odaklı))",
+      "source_context": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı Sayfa 11-40 (1. Ünite: Kader İnancı (LGS Odaklı)) aralığında 'Ömür, Ecel, Tevekkül, Rızık, Sağlık ve Başarı' ve 'Ayet el-Kürsi' konuları örneklerle ele alınmaktadır.",
       "arabic_text": "",
-      "question_text": "Yüce Allah'ın insanlara doğru yolu göstermek için Hz. Muhammed'e (s.a.v.) indirdiği son kutsal kitabın adı nedir? Doğru olanı işaretleyiniz.",
-      "options": [
-        "A) Kur'an-ı Kerim",
-        "B) İncil",
-        "C) Tevrat"
-      ],
-      "answer_text": "Doğru Seçenek: A) Kur'an-ı Kerim",
+      "question_text": "Bir Müslümanın 'Ömür, Ecel, Tevekkül, Rızık, Sağlık ve Başarı' konusundaki duyarlılığı, onun ibadetlerine ve insanlarla olan iletişimine nasıl yansır? '1. Ünite: Kader İnancı (LGS Odaklı)' ünitesi kapsamında değerlendiriniz.",
+      "options": [],
+      "answer_text": "'Ömür, Ecel, Tevekkül, Rızık, Sağlık ve Başarı' konusu, 1. Ünite: Kader İnancı (LGS Odaklı) ünitesinin temel kazanımlarından biridir. Bireyin konuyu doğru anlaması, hem ibadet/ahlak bilincini geliştirir hem de 'Ayet el-Kürsi' ilkesiyle bütünleşerek örnek bir yaşam sürmesini sağlar.",
       "rubric": [
         {
-          "criterion": "A seçeneğinin (Kur'an-ı Kerim) doğru işaretlenmesi",
-          "points": 20
+          "criterion": "'Ömür, Ecel, Tevekkül, Rızık, Sağlık ve Başarı' kavramının/konusunun doğru tanımlanıp açıklanması",
+          "points": 5
+        },
+        {
+          "criterion": "Örnek olay veya günlük yaşam bağlantısının doğru kurulması",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 6,
+      "points": 10,
+      "unit_name": "4. Ünite: Hz. Muhammed'in Örnekliği",
+      "learning_outcome": "[DKAB.8.8.1] 1. Ünite: Kader İnancı (LGS Odaklı) kapsamında 'Kader ve Kaza Kavramları' konusunu analiz eder ve yorumlar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Analiz",
+      "difficulty": "Orta",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 101-126 (4. Ünite: Hz. Muhammed'in Örnekliği)",
+      "source_context": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı Sayfa 11-40 (1. Ünite: Kader İnancı (LGS Odaklı)) aralığında 'Kader ve Kaza Kavramları' ve 'Evrenin Yasaları (Fiziksel, Biyolojik ve Toplumsal Yasalar)' konuları örneklerle ele alınmaktadır.",
+      "arabic_text": "",
+      "question_text": "'Kader ve Kaza Kavramları' konusunun temel mesajını açıklayarak; Zeynep ve ailesi örneğinde olduğu gibi akşam sohbetinde bu konunun günlük hayatımıza nasıl rehberlik ettiğini yazınız.",
+      "options": [],
+      "answer_text": "'Kader ve Kaza Kavramları' konusu, 1. Ünite: Kader İnancı (LGS Odaklı) ünitesinin temel kazanımlarından biridir. Bireyin konuyu doğru anlaması, hem ibadet/ahlak bilincini geliştirir hem de 'Evrenin Yasaları (Fiziksel, Biyolojik ve Toplumsal Yasalar)' ilkesiyle bütünleşerek örnek bir yaşam sürmesini sağlar.",
+      "rubric": [
+        {
+          "criterion": "'Kader ve Kaza Kavramları' kavramının/konusunun doğru tanımlanıp açıklanması",
+          "points": 5
+        },
+        {
+          "criterion": "Örnek olay veya günlük yaşam bağlantısının doğru kurulması",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 7,
+      "points": 10,
+      "unit_name": "1. Ünite: Kader İnancı (LGS Odaklı)",
+      "learning_outcome": "[DKAB.8.8.3] 4. Ünite: Hz. Muhammed'in Örnekliği kapsamında 'İstişareye Verdiği Önem' konusunu analiz eder ve yorumlar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Analiz",
+      "difficulty": "Orta",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 11-40 (1. Ünite: Kader İnancı (LGS Odaklı))",
+      "source_context": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı Sayfa 101-126 (4. Ünite: Hz. Muhammed'in Örnekliği) aralığında 'İstişareye Verdiği Önem' ve 'Kureyş Suresi' konuları örneklerle ele alınmaktadır.",
+      "arabic_text": "",
+      "question_text": "Bir Müslümanın 'İstişareye Verdiği Önem' konusundaki duyarlılığı, onun ibadetlerine ve insanlarla olan iletişimine nasıl yansır? '4. Ünite: Hz. Muhammed'in Örnekliği' ünitesi kapsamında değerlendiriniz.",
+      "options": [],
+      "answer_text": "'İstişareye Verdiği Önem' konusu, 4. Ünite: Hz. Muhammed'in Örnekliği ünitesinin temel kazanımlarından biridir. Bireyin konuyu doğru anlaması, hem ibadet/ahlak bilincini geliştirir hem de 'Kureyş Suresi' ilkesiyle bütünleşerek örnek bir yaşam sürmesini sağlar.",
+      "rubric": [
+        {
+          "criterion": "'İstişareye Verdiği Önem' kavramının/konusunun doğru tanımlanıp açıklanması",
+          "points": 5
+        },
+        {
+          "criterion": "Örnek olay veya günlük yaşam bağlantısının doğru kurulması",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 8,
+      "points": 10,
+      "unit_name": "2. Ünite: Zekât ve Sadaka (LGS Odaklı)",
+      "learning_outcome": "[DKAB.8.8.4] 4. Ünite: Hz. Muhammed'in Örnekliği kapsamında 'Kureyş Suresi' konusunu analiz eder ve yorumlar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Yorumlama",
+      "difficulty": "Kolay",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 41-72 (2. Ünite: Zekât ve Sadaka (LGS Odaklı))",
+      "source_context": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı Sayfa 101-126 (4. Ünite: Hz. Muhammed'in Örnekliği) aralığında 'Kureyş Suresi' ve 'Hz. Muhammed'in Doğruluğu ve Güvenilirliği (Muhammedü'l-Emîn)' konuları örneklerle ele alınmaktadır.",
+      "arabic_text": "",
+      "question_text": "Ders kitabımızda '4. Ünite: Hz. Muhammed'in Örnekliği' ünitesinde işlenen 'Kureyş Suresi' konusunun birey ve toplum açısından önemini neden-sonuç ilişkisi kurarak yorumlayınız.",
+      "options": [],
+      "answer_text": "'Kureyş Suresi' konusu, 4. Ünite: Hz. Muhammed'in Örnekliği ünitesinin temel kazanımlarından biridir. Bireyin konuyu doğru anlaması, hem ibadet/ahlak bilincini geliştirir hem de 'Hz. Muhammed'in Doğruluğu ve Güvenilirliği (Muhammedü'l-Emîn)' ilkesiyle bütünleşerek örnek bir yaşam sürmesini sağlar.",
+      "rubric": [
+        {
+          "criterion": "'Kureyş Suresi' kavramının/konusunun doğru tanımlanıp açıklanması",
+          "points": 5
+        },
+        {
+          "criterion": "Örnek olay veya günlük yaşam bağlantısının doğru kurulması",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 9,
+      "points": 10,
+      "unit_name": "4. Ünite: Hz. Muhammed'in Örnekliği",
+      "learning_outcome": "[DKAB.8.8.3] 2. Ünite: Zekât ve Sadaka (LGS Odaklı) kapsamında 'Zekâtın Toplumsal Faydaları' konusunu analiz eder ve yorumlar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Uygulama",
+      "difficulty": "Orta",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 101-126 (4. Ünite: Hz. Muhammed'in Örnekliği)",
+      "source_context": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı Sayfa 41-72 (2. Ünite: Zekât ve Sadaka (LGS Odaklı)) aralığında 'Zekâtın Toplumsal Faydaları' ve 'Maun Suresi' konuları örneklerle ele alınmaktadır.",
+      "arabic_text": "",
+      "question_text": "'Zekâtın Toplumsal Faydaları' konusunun temel mesajını açıklayarak; Okul gazetesine yazı hazırlayan Elif örneğinde olduğu gibi konunun pratik yansımalarını sıralarken bu konunun günlük hayatımıza nasıl rehberlik ettiğini yazınız.",
+      "options": [],
+      "answer_text": "'Zekâtın Toplumsal Faydaları' konusu, 2. Ünite: Zekât ve Sadaka (LGS Odaklı) ünitesinin temel kazanımlarından biridir. Bireyin konuyu doğru anlaması, hem ibadet/ahlak bilincini geliştirir hem de 'Maun Suresi' ilkesiyle bütünleşerek örnek bir yaşam sürmesini sağlar.",
+      "rubric": [
+        {
+          "criterion": "'Zekâtın Toplumsal Faydaları' kavramının/konusunun doğru tanımlanıp açıklanması",
+          "points": 5
+        },
+        {
+          "criterion": "Örnek olay veya günlük yaşam bağlantısının doğru kurulması",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "q_order": 10,
+      "points": 10,
+      "unit_name": "1. Ünite: Kader İnancı (LGS Odaklı)",
+      "learning_outcome": "[DKAB.8.8.1] 2. Ünite: Zekât ve Sadaka (LGS Odaklı) kapsamında 'İslam'ın Paylaşma ve Yardımlaşmaya Verdiği Önem' konusunu analiz eder ve yorumlar.",
+      "question_type": "acik_uclu",
+      "cognitive_level": "Yorumlama",
+      "difficulty": "Kolay",
+      "source_book": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı",
+      "source_page": "Sayfa 11-40 (1. Ünite: Kader İnancı (LGS Odaklı))",
+      "source_context": "8. Sınıf Din Kültürü ve Ahlak Bilgisi MEB Ders Kitabı Sayfa 41-72 (2. Ünite: Zekât ve Sadaka (LGS Odaklı)) aralığında 'İslam'ın Paylaşma ve Yardımlaşmaya Verdiği Önem' ve 'Zekât ve Sadaka İbadeti (Nisap, Kimlere Verilir, Hangi Oranlarda Verilir)' konuları örneklerle ele alınmaktadır.",
+      "arabic_text": "",
+      "question_text": "Bir Müslümanın 'İslam'ın Paylaşma ve Yardımlaşmaya Verdiği Önem' konusundaki duyarlılığı, onun ibadetlerine ve insanlarla olan iletişimine nasıl yansır? '2. Ünite: Zekât ve Sadaka (LGS Odaklı)' ünitesi kapsamında değerlendiriniz.",
+      "options": [],
+      "answer_text": "'İslam'ın Paylaşma ve Yardımlaşmaya Verdiği Önem' konusu, 2. Ünite: Zekât ve Sadaka (LGS Odaklı) ünitesinin temel kazanımlarından biridir. Bireyin konuyu doğru anlaması, hem ibadet/ahlak bilincini geliştirir hem de 'Zekât ve Sadaka İbadeti (Nisap, Kimlere Verilir, Hangi Oranlarda Verilir)' ilkesiyle bütünleşerek örnek bir yaşam sürmesini sağlar.",
+      "rubric": [
+        {
+          "criterion": "'İslam'ın Paylaşma ve Yardımlaşmaya Verdiği Önem' kavramının/konusunun doğru tanımlanıp açıklanması",
+          "points": 5
+        },
+        {
+          "criterion": "Örnek olay veya günlük yaşam bağlantısının doğru kurulması",
+          "points": 5
         }
       ]
     }

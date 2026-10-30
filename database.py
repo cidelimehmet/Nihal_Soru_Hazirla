@@ -153,6 +153,9 @@ def save_exam(exam_data: dict) -> int:
     hdr_dict = dict(exam_data.get("header_info") or {})
     if exam_data.get("bep_options"):
         hdr_dict["bep_options"] = exam_data["bep_options"]
+    for opt_key in ("show_answer_lines", "show_question_outcomes", "show_scenario_in_header"):
+        if opt_key in exam_data:
+            hdr_dict[opt_key] = bool(exam_data[opt_key])
     header_info_json = json.dumps(hdr_dict, ensure_ascii=False)
     exam_title = exam_data.get("title", "İsimsiz Sınav")
     
@@ -295,8 +298,12 @@ def get_exam(exam_id: int) -> dict:
     if exam.get("header_info"):
         try:
             exam["header_info"] = json.loads(exam["header_info"])
-            if isinstance(exam["header_info"], dict) and exam["header_info"].get("bep_options"):
-                exam["bep_options"] = exam["header_info"]["bep_options"]
+            if isinstance(exam["header_info"], dict):
+                if exam["header_info"].get("bep_options"):
+                    exam["bep_options"] = exam["header_info"]["bep_options"]
+                for opt_key in ("show_answer_lines", "show_question_outcomes", "show_scenario_in_header"):
+                    if opt_key in exam["header_info"]:
+                        exam[opt_key] = bool(exam["header_info"][opt_key])
         except Exception:
             pass
             
