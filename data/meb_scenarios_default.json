@@ -1,0 +1,1728 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "metadata": {
+    "academic_year": "2026-2027",
+    "institution_type": "İmam Hatip Ortaokulu (İHO)",
+    "location": {
+      "province": "Kocaeli",
+      "district": "Darıca"
+    },
+    "description": "MEB ÖDSGM ve Kocaeli ÖDM Konu Soru Dağılım Tablolarında yer alan tüm resmi alternatif senaryolar (Senaryo 1, 2, 3 vb.)",
+    "version": "3.0.0"
+  },
+  "levels": [
+    {
+      "grade": 5,
+      "courses": [
+        {
+          "course_code": "DKAB-5",
+          "course_name": "Din Kültürü ve Ahlak Bilgisi",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Dengeli Dağılım)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.1",
+                      "outcome_description": "Evrendeki mükemmel düzen ile Allah'ın varlığı ve birliği arasında ilişki kurar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.2",
+                      "outcome_description": "Allah'ın (c.c.) isim ve sıfatlarının anlamlarını açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.4",
+                      "outcome_description": "Dua ile ilgili ayet ve hadislerden hareketle duanın anlamını ve önemini yorumlar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.6",
+                      "outcome_description": "İhlas suresini anlamıyla birlikte analiz eder.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Kavram ve Sıfat Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.1",
+                      "outcome_description": "Evrendeki mükemmel düzen ile Allah'ın varlığı ve birliği arasında ilişki kurar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.2",
+                      "outcome_description": "Allah'ın (c.c.) isim ve sıfatlarının anlamlarını açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.4",
+                      "outcome_description": "Dua ile ilgili ayet ve hadislerden hareketle duanın önemini kavrar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.6",
+                      "outcome_description": "İhlas suresini ve mesajını açıklar.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 3,
+                  "name": "Senaryo 3 (Çıkarım ve Muhakeme Odaklı)",
+                  "total_questions": 7,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.1",
+                      "outcome_description": "Evrendeki mükemmel düzen ile Allah'ın varlığı ve birliği arasında ilişki kurar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.2",
+                      "outcome_description": "Allah'ın (c.c.) isim ve sıfatlarının anlamlarını açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.4",
+                      "outcome_description": "Duanın anlamını ve önemini yorumlar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Allah İnancı",
+                      "outcome_code": "DKAB.5.1.6",
+                      "outcome_description": "İhlas suresini anlamıyla birlikte analiz eder.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Oruç ve Adap Dengeli)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Ramazan ve Oruç",
+                      "outcome_code": "DKAB.5.2.1",
+                      "outcome_description": "Ramazan ayı ve orucun önemini ayet ve hadislerle açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Ramazan ve Oruç",
+                      "outcome_code": "DKAB.5.2.2",
+                      "outcome_description": "Ramazan ve oruçla ilgili temel kavramları açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Adap ve Nezaket",
+                      "outcome_code": "DKAB.5.3.1",
+                      "outcome_description": "Toplumsal hayatta nezaket kurallarına uymanın önemini fark eder.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Adap ve Nezaket",
+                      "outcome_code": "DKAB.5.3.4",
+                      "outcome_description": "Tahiyyat duasını okur ve anlamını açıklar.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Kavramsal Ağırlıklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Ramazan ve Oruç",
+                      "outcome_code": "DKAB.5.2.1",
+                      "outcome_description": "Ramazan ayı ve orucun önemini açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Ramazan ve Oruç",
+                      "outcome_code": "DKAB.5.2.2",
+                      "outcome_description": "Ramazan ve oruçla ilgili temel kavramları (sahur, iftar, fitre) açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Adap ve Nezaket",
+                      "outcome_code": "DKAB.5.3.1",
+                      "outcome_description": "Nezaket kurallarının önemini fark eder.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "course_code": "SIYER-5",
+          "course_name": "Peygamberimizin Hayatı",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Standart Kronoloji)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamberimizin Çocukluk Yılları",
+                      "outcome_code": "SIYER.5.1.1",
+                      "outcome_description": "İslam öncesi Arap Yarımadası'nın dini ve sosyal durumunu açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamberimizin Çocukluk Yılları",
+                      "outcome_code": "SIYER.5.1.2",
+                      "outcome_description": "Peygamberimizin ailesini ve sütanneye veriliş sürecini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamberimizin Çocukluk Yılları",
+                      "outcome_code": "SIYER.5.1.3",
+                      "outcome_description": "Dedesi ve amcası yanındaki çocukluk dönemine ait olayları değerlendirir.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Aile ve Sosyal Çevre)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamberimizin Çocukluk Yılları",
+                      "outcome_code": "SIYER.5.1.1",
+                      "outcome_description": "Cahiliye dönemi adet ve inançlarını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamberimizin Çocukluk Yılları",
+                      "outcome_code": "SIYER.5.1.2",
+                      "outcome_description": "Peygamberimizin ailesini ve soyunu açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamberimizin Çocukluk Yılları",
+                      "outcome_code": "SIYER.5.1.3",
+                      "outcome_description": "Çocukluk yıllarındaki erdemli davranışlarını açıklar.",
+                      "question_count": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Aile ve Çocukluk İlişkileri)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Peygamberimiz ve Ailesi",
+                      "outcome_code": "SIYER.5.3.1",
+                      "outcome_description": "Aile fertlerine karşı şefkatli tutumunu örneklerle açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Peygamberimiz ve Ailesi",
+                      "outcome_code": "SIYER.5.3.2",
+                      "outcome_description": "Çocukları ve torunlarıyla ilişkisini tahlil eder.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Peygamberimiz ve Arkadaşları",
+                      "outcome_code": "SIYER.5.4.1",
+                      "outcome_description": "Çocuk sahabilere olan yaklaşımını açıklar.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Örnek Davranışlar)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Peygamberimiz ve Ailesi",
+                      "outcome_code": "SIYER.5.3.1",
+                      "outcome_description": "Aile fertlerine karşı şefkatli tutumunu açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Peygamberimiz ve Arkadaşları",
+                      "outcome_code": "SIYER.5.4.1",
+                      "outcome_description": "Çocuk sahabilere olan yaklaşımını analiz eder.",
+                      "question_count": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "course_code": "KURAN-5",
+          "course_name": "Kur'an-ı Kerim",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Kavram ve Genel Bilgi)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an-ı Kerim'i Tanıyalım",
+                      "outcome_code": "KURAN.5.1.1",
+                      "outcome_description": "Vahiy kavramını ve indiriliş sürecini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an-ı Kerim'i Tanıyalım",
+                      "outcome_code": "KURAN.5.1.2",
+                      "outcome_description": "Ayet, sure ve cüz kavramlarını tanımlar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an-ı Kerim'i Tanıyalım",
+                      "outcome_code": "KURAN.5.1.3",
+                      "outcome_description": "Kur'an okumanın ve anlamanın önemini değerlendirir.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Tanım ve Yapı Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an-ı Kerim'i Tanıyalım",
+                      "outcome_code": "KURAN.5.1.1",
+                      "outcome_description": "Vahiy kavramını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an-ı Kerim'i Tanıyalım",
+                      "outcome_code": "KURAN.5.1.2",
+                      "outcome_description": "Ayet, sure ve cüz kavramlarını tanımlar ve özelliklerini yazar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an-ı Kerim'i Tanıyalım",
+                      "outcome_code": "KURAN.5.1.3",
+                      "outcome_description": "Kur'an okumanın önemini belirtir.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Kural ve Uygulama)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Kur'an Okumaya Giriş",
+                      "outcome_code": "KURAN.5.2.3",
+                      "outcome_description": "Cezm, şedde ve tenvin kurallarını ayırt eder.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Ezber Dualar / Sureler",
+                      "outcome_code": "KURAN.5.3.1",
+                      "outcome_description": "Fil ve Kureyş surelerinin temel mesajını kavrar.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Sure Anlam Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Kur'an Okumaya Giriş",
+                      "outcome_code": "KURAN.5.2.3",
+                      "outcome_description": "Harekelerin ve işaretlerin işlevini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Ezber Dualar / Sureler",
+                      "outcome_code": "KURAN.5.3.1",
+                      "outcome_description": "Fil suresinin ana konusunu ve mesajını açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Ezber Dualar / Sureler",
+                      "outcome_code": "KURAN.5.3.2",
+                      "outcome_description": "Kureyş suresinin ana mesajını özetler.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": 6,
+      "courses": [
+        {
+          "course_code": "DKAB-6",
+          "course_name": "Din Kültürü ve Ahlak Bilgisi",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Peygamber ve Kitap İnancı)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.1",
+                      "outcome_description": "Peygamberlik kavramını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.2",
+                      "outcome_description": "Peygamberlerin sıfatlarını ve görevlerini örneklerle açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.3",
+                      "outcome_description": "İlahi kitapları ve peygamberlerini eşleştirir.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.5",
+                      "outcome_description": "Asr suresini ve mesajını tahlil eder.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Sıfat ve Sure Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.2",
+                      "outcome_description": "Peygamberlerin sıfatlarını (sıdk, emanet, fetanet, ismet, tebliğ) açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.3",
+                      "outcome_description": "İlahi kitapların temel mesajlarını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.5",
+                      "outcome_description": "Asr suresinin ana mesajını açıklar.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 3,
+                  "name": "Senaryo 3 (Detaylı Analiz)",
+                  "total_questions": 7,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.1",
+                      "outcome_description": "Peygamber ve elçi kavramlarını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.2",
+                      "outcome_description": "Peygamberlerin sıfatlarını ve görevlerini açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.3",
+                      "outcome_description": "Dört büyük kitap ve suhuf verilen peygamberleri listeler.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Peygamber ve İlahi Kitap İnancı",
+                      "outcome_code": "DKAB.6.1.5",
+                      "outcome_description": "Asr suresini analiz eder.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Namaz ve Temizlik)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Namaz",
+                      "outcome_code": "DKAB.6.2.1",
+                      "outcome_description": "İslam'da namaz ibadetinin önemini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Namaz",
+                      "outcome_code": "DKAB.6.2.2",
+                      "outcome_description": "Namazın şartlarını ve rükünlerini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Namaz",
+                      "outcome_code": "DKAB.6.2.3",
+                      "outcome_description": "Abdest, boy abdesti ve teyemmümün yapılışını açıklar.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Namazın Farzları Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Namaz",
+                      "outcome_code": "DKAB.6.2.1",
+                      "outcome_description": "Namaz ibadetinin önemini açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Namaz",
+                      "outcome_code": "DKAB.6.2.2",
+                      "outcome_description": "Namazın içindeki ve dışındaki farzları açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Namaz",
+                      "outcome_code": "DKAB.6.2.3",
+                      "outcome_description": "Abdestin farzlarını listeler.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "course_code": "SIYER-6",
+          "course_name": "Peygamberimizin Hayatı",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Erdem ve Tebliğ)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Gençlik Yılları ve Mekke",
+                      "outcome_code": "SIYER.6.1.1",
+                      "outcome_description": "Hilfu'l-Fudul cemiyetindeki rolünü açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Mekke Dönemi",
+                      "outcome_code": "SIYER.6.1.2",
+                      "outcome_description": "İlk vahyin geliş sürecini özetler.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Mekke Dönemi",
+                      "outcome_code": "SIYER.6.1.3",
+                      "outcome_description": "Gizli ve açık davet sürecinde karşılaşılan zorlukları yorumlar.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (İlk Vahiy ve Zorluklar)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Mekke Dönemi",
+                      "outcome_code": "SIYER.6.1.1",
+                      "outcome_description": "Gençlik yıllarındaki ahlakını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Mekke Dönemi",
+                      "outcome_code": "SIYER.6.1.2",
+                      "outcome_description": "Hira mağarasındaki ilk vahiy sürecini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Mekke Dönemi",
+                      "outcome_code": "SIYER.6.1.3",
+                      "outcome_description": "Müşriklerin uyguladığı boykot ve baskıları değerlendirir.",
+                      "question_count": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Medine Dönemi ve Mücadele)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Medine Dönemi",
+                      "outcome_code": "SIYER.6.3.1",
+                      "outcome_description": "Ensar ve Muhacir kardeşliğini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Medine Dönemi",
+                      "outcome_code": "SIYER.6.3.2",
+                      "outcome_description": "Bedir, Uhud ve Hendek gazvelerinin temel sebeplerini ve sonuçlarını açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Medine Dönemi",
+                      "outcome_code": "SIYER.6.3.4",
+                      "outcome_description": "Hudeybiye Barış Antlaşması'nın önemini değerlendirir.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Gazveler ve Antlaşmalar)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Medine Dönemi",
+                      "outcome_code": "SIYER.6.3.1",
+                      "outcome_description": "Muahat uygulamasını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Medine Dönemi",
+                      "outcome_code": "SIYER.6.3.2",
+                      "outcome_description": "Uhud ve Hendek savaşlarının ibretlik yönlerini tahlil eder.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Medine Dönemi",
+                      "outcome_code": "SIYER.6.3.4",
+                      "outcome_description": "Hudeybiye Antlaşması maddelerini değerlendirir.",
+                      "question_count": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "course_code": "KURAN-6",
+          "course_name": "Kur'an-ı Kerim",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Temel İlkeler ve Med-i Tabiî)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an'ın Temel Özellikleri",
+                      "outcome_code": "KURAN.6.1.1",
+                      "outcome_description": "Kur'an'ın rehber olma özelliğini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.6.1.2",
+                      "outcome_description": "Medd-i Tabiî kuralını uygular ve açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Sure Tanıma",
+                      "outcome_code": "KURAN.6.1.3",
+                      "outcome_description": "Ayetü'l-Kürsi'nin temel mesajlarını listeler.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Tecvid Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an'ın Temel Özellikleri",
+                      "outcome_code": "KURAN.6.1.1",
+                      "outcome_description": "Kur'an'ın evrensel mesajlarını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.6.1.2",
+                      "outcome_description": "Medd-i Tabiî kuralına örnek kelimeler verir.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Sure Tanıma",
+                      "outcome_code": "KURAN.6.1.3",
+                      "outcome_description": "Fatiha suresinin anlamını açıklar.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Med Çeşitleri ve Kıssalar)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.6.3.1",
+                      "outcome_description": "Medd-i Muttasıl ve Medd-i Munfasıl kurallarını ayırt eder.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Kıssalar",
+                      "outcome_code": "KURAN.6.4.1",
+                      "outcome_description": "Hz. Zekeriya ve Hz. Yahya kıssalarından dersler çıkarır.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Kural Ağırlıklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.6.3.1",
+                      "outcome_description": "Med çeşitlerini tanımlar ve sebep-harf ilişkisini açıklar.",
+                      "question_count": 4
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Kıssalar",
+                      "outcome_code": "KURAN.6.4.1",
+                      "outcome_description": "Hz. Yahya'nın örnek ahlakını açıklar.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": 7,
+      "courses": [
+        {
+          "course_code": "DKAB-7",
+          "course_name": "Din Kültürü ve Ahlak Bilgisi",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Varlıklar Âlemi ve Ahiret)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.1",
+                      "outcome_description": "Varlıklar âlemini sınıflandırarak meleklerin temel özelliklerini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.2",
+                      "outcome_description": "Dört büyük melek ve görevlerini açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.3",
+                      "outcome_description": "Dünya hayatı ile ahiret hayatı arasındaki ilişkiyi açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.5",
+                      "outcome_description": "Nas suresinin mesajını tahlil eder.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Ahiret Aşamaları Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.1",
+                      "outcome_description": "Görülen ve görülmeyen varlıkları ayırt eder.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.3",
+                      "outcome_description": "Ahiret hayatının aşamalarını (kıyamet, ba's, haşr, mizan, cennet/cehennem) açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.5",
+                      "outcome_description": "Nas suresini açıklar.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 3,
+                  "name": "Senaryo 3 (Kapsamlı)",
+                  "total_questions": 7,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.1",
+                      "outcome_description": "Meleklerin özelliklerini cin ve şeytandan ayıran yönlerini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.2",
+                      "outcome_description": "Meleklerin görevlerini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.3",
+                      "outcome_description": "Ahiret inancının insan davranışlarına etkisini değerlendirir.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Melek ve Ahiret İnancı",
+                      "outcome_code": "DKAB.7.1.5",
+                      "outcome_description": "Nas suresinin tefsirini özetler.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Hac, Umre ve Kurban)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Hac ve Umre",
+                      "outcome_code": "DKAB.7.2.1",
+                      "outcome_description": "İslam'da hac ve umre ibadetinin önemini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Hac ve Umre",
+                      "outcome_code": "DKAB.7.2.2",
+                      "outcome_description": "Hac ile ilgili kavramları (ihram, tavaf, sa'y, vakfe) açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Kurban İbadeti",
+                      "outcome_code": "DKAB.7.2.4",
+                      "outcome_description": "Kurban ibadetinin bireysel ve toplumsal faydalarını değerlendirir.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Mekânlar ve Kavramlar)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Hac ve Umre",
+                      "outcome_code": "DKAB.7.2.2",
+                      "outcome_description": "Arafat, Müzdelife, Mina ve Kâbe mekanlarının ibadetteki yerini açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Kurban İbadeti",
+                      "outcome_code": "DKAB.7.2.4",
+                      "outcome_description": "Kurban çeşitlerini (adak, akika vb.) ve hükümlerini açıklar.",
+                      "question_count": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "course_code": "SIYER-7",
+          "course_name": "Peygamberimizin Hayatı",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Hicret ve Medine Düzeni)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Hicret",
+                      "outcome_code": "SIYER.7.1.1",
+                      "outcome_description": "Hicretin nedenlerini ve sonuçlarını açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Mescid-i Nebi",
+                      "outcome_code": "SIYER.7.1.2",
+                      "outcome_description": "Mescid-i Nebi'nin inşasını ve toplumsal işlevini (Suffe) açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Medine Sözleşmesi",
+                      "outcome_code": "SIYER.7.1.3",
+                      "outcome_description": "Medine Sözleşmesi'nin bir arada yaşama kültürüne katkısını değerlendirir.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Kurumsallaşma Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Hicret",
+                      "outcome_code": "SIYER.7.1.1",
+                      "outcome_description": "Hicret güzergahı ve Sevr mağarası olayını değerlendirir.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Mescid-i Nebi",
+                      "outcome_code": "SIYER.7.1.2",
+                      "outcome_description": "Suffe ashabı ve eğitimdeki rolünü açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Medine Sözleşmesi",
+                      "outcome_code": "SIYER.7.1.3",
+                      "outcome_description": "Medine Sözleşmesi'nin maddelerini analiz eder.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Fetih ve Veda Hutbesi)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "İslam'ın Yayılışı",
+                      "outcome_code": "SIYER.7.3.1",
+                      "outcome_description": "İslam'a davet mektuplarının amacını açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Mekke'nin Fethi",
+                      "outcome_code": "SIYER.7.3.2",
+                      "outcome_description": "Mekke'nin fethinde gösterilen merhameti ve genel affı yorumlar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Veda Haccı ve Hutbesi",
+                      "outcome_code": "SIYER.7.4.1",
+                      "outcome_description": "Veda Hutbesi'ndeki evrensel insan hakları ilkelerini analiz eder.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Veda Hutbesi İlkeleri)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Mekke'nin Fethi",
+                      "outcome_code": "SIYER.7.3.2",
+                      "outcome_description": "Mekke'nin fethi sürecini ve sonuçlarını açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Veda Haccı ve Hutbesi",
+                      "outcome_code": "SIYER.7.4.1",
+                      "outcome_description": "Veda Hutbesi'ndeki can, mal güvenliği ve kadın hakları ilkelerini değerlendirir.",
+                      "question_count": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "course_code": "KURAN-7",
+          "course_name": "Kur'an-ı Kerim",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Ana Konular ve İhfa/İzhar)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an'ın Ana Konuları",
+                      "outcome_code": "KURAN.7.1.1",
+                      "outcome_description": "İnanç, ibadet ve ahlak konularını açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.7.1.2",
+                      "outcome_description": "İhfa ve İzhar kurallarını metin üzerinden gösterir.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Örnek Dualar",
+                      "outcome_code": "KURAN.7.1.3",
+                      "outcome_description": "Rabbena dualarının anlamını açıklar.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Tecvid Uygulama Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kur'an'ın Ana Konuları",
+                      "outcome_code": "KURAN.7.1.1",
+                      "outcome_description": "Kıssaların anlatılış amacını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.7.1.2",
+                      "outcome_description": "İzhar harflerini ve ihfa harflerini açıklar ve uygular.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Örnek Dualar",
+                      "outcome_code": "KURAN.7.1.3",
+                      "outcome_description": "Rabbena dualarının mesajını yazar.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (İdgam Kuralları ve Ashab-ı Kehf)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.7.3.1",
+                      "outcome_description": "İdgam-ı Meal Gunne ve İdgam-ı Bila Gunne kurallarını ayırt eder.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Kıssalar",
+                      "outcome_code": "KURAN.7.4.1",
+                      "outcome_description": "Ashab-ı Kehf kıssasından inanç dersleri çıkarır.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (İdgam Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.7.3.1",
+                      "outcome_description": "Sakin nun ve tenvinden sonra gelen harflere göre idgam türlerini açıklar.",
+                      "question_count": 4
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Kıssalar",
+                      "outcome_code": "KURAN.7.4.1",
+                      "outcome_description": "Ashab-ı Kehf olayının ana fikrini yazar.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": 8,
+      "courses": [
+        {
+          "course_code": "DKAB-8",
+          "course_name": "Din Kültürü ve Ahlak Bilgisi (LGS Seviyesi)",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Kader ve Evrensel Yasalar)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.1",
+                      "outcome_description": "Kader ve kaza inancını ayet ve hadislerle açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.2",
+                      "outcome_description": "Külli irade ve cüzi irade ilişkisini kurar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.3",
+                      "outcome_description": "Fiziksel, biyolojik ve toplumsal yasaların özelliklerini analiz eder.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.6",
+                      "outcome_description": "Ayet el-Kürsi'yi okur, anlamını yorumlar.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Kavram ve Kıssa Odaklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.2",
+                      "outcome_description": "Tevekkül, rızık, ecel ve ömür kavramlarını değerlendirir.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.3",
+                      "outcome_description": "Fiziksel ve biyolojik yasaları örnek olaylarla açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.5",
+                      "outcome_description": "Hz. Musa'nın (a.s.) hayatını ana hatlarıyla özetler.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 3,
+                  "name": "Senaryo 3 (LGS Mantığı / Çok Yönlü Muhakeme)",
+                  "total_questions": 7,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.1",
+                      "outcome_description": "Kader ve kaza kavramlarını ayırt eder.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.2",
+                      "outcome_description": "İnsanın sorumluluğu ve iradesi bağlamında eylemlerini yorumlar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.3",
+                      "outcome_description": "Üç evrensel yasayı (fiziksel, biyolojik, toplumsal) karşılaştırır.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.5",
+                      "outcome_description": "Hz. Musa'nın firavuna karşı mücadelesini açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Kader İnancı",
+                      "outcome_code": "DKAB.8.1.6",
+                      "outcome_description": "Ayet el-Kürsi'nin ana mesajlarını maddeler.",
+                      "question_count": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Zekat, Sadaka ve Dinin Gayesi)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Zekat ve Sadaka",
+                      "outcome_code": "DKAB.8.2.1",
+                      "outcome_description": "İslam'ın yardımlaşmaya verdiği önemi açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Zekat ve Sadaka",
+                      "outcome_code": "DKAB.8.2.2",
+                      "outcome_description": "Zekat oranlarını, nisap miktarını ve verilecek kimseleri açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Din ve Hayat",
+                      "outcome_code": "DKAB.8.3.1",
+                      "outcome_description": "Zarurat-ı Diniyye (can, nesil, akıl, mal, din korunması) ilkelerini açıklar.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Hesaplama ve Hükümler)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Zekat ve Sadaka",
+                      "outcome_code": "DKAB.8.2.2",
+                      "outcome_description": "Altın, ticaret malı, küçükbaş/büyükbaş hayvan ve toprak ürünleri zekat oranlarını açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Din ve Hayat",
+                      "outcome_code": "DKAB.8.3.1",
+                      "outcome_description": "Can ve mal emniyetinin İslam'daki yerini açıklar.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 3,
+                  "name": "Senaryo 3 (Kapsamlı Zekat ve Fıkhi Boyut)",
+                  "total_questions": 7,
+                  "items": [
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Zekat ve Sadaka",
+                      "outcome_code": "DKAB.8.2.1",
+                      "outcome_description": "Yardımlaşmanın toplumsal dayanışmadaki rolünü analiz eder.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Zekat ve Sadaka",
+                      "outcome_code": "DKAB.8.2.2",
+                      "outcome_description": "Zekat ve sadaka-i cariye farkını ve oranlarını açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Din ve Hayat",
+                      "outcome_code": "DKAB.8.3.1",
+                      "outcome_description": "Temel hakların korunması ilkelerini yorumlar.",
+                      "question_count": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "course_code": "SIYER-8",
+          "course_name": "Peygamberimizin Hayatı",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Adalet, Merhamet ve İstişare)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Ahlaki Örneklik",
+                      "outcome_code": "SIYER.8.1.1",
+                      "outcome_description": "Adalet ve dürüstlük anlayışını somut hadiseler üzerinden açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Ahlaki Örneklik",
+                      "outcome_code": "SIYER.8.1.2",
+                      "outcome_description": "Merhametli ve affedici tavrının toplumsal etkilerini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Ahlaki Örneklik",
+                      "outcome_code": "SIYER.8.1.3",
+                      "outcome_description": "İstişareye verdiği önemi Uhud ve Hendek örnekleriyle analiz eder.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Örnek Olay Analizi)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Ahlaki Örneklik",
+                      "outcome_code": "SIYER.8.1.1",
+                      "outcome_description": "Hacerü'l-Esved hakemliği üzerinden adaletini açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Ahlaki Örneklik",
+                      "outcome_code": "SIYER.8.1.3",
+                      "outcome_description": "İstişare ilkesinin yönetim ve aile hayatındaki uygulamalarını tahlil eder.",
+                      "question_count": 3
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Toplumsal Barış ve Sünnet)",
+                  "total_questions": 6,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Peygamberimiz ve Toplum",
+                      "outcome_code": "SIYER.8.3.1",
+                      "outcome_description": "Farklı inanç mensuplarıyla ilişkilerinde adaleti modeller.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Peygamberimiz ve Toplum",
+                      "outcome_code": "SIYER.8.3.2",
+                      "outcome_description": "Genç sahabilerin İslam tebliğindeki rolünü analiz eder.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Sünnetin Önemi",
+                      "outcome_code": "SIYER.8.4.1",
+                      "outcome_description": "Sünnetin dinin anlaşılmasındaki yerini değerlendirir.",
+                      "question_count": 2
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Genç Sahabiler ve Sünnet)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Peygamberimiz ve Toplum",
+                      "outcome_code": "SIYER.8.3.2",
+                      "outcome_description": "Hz. Ali, Cafer b. Ebi Talib, Usame b. Zeyd gibi genç sahabilerin görevlerini açıklar.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Sünnetin Önemi",
+                      "outcome_code": "SIYER.8.4.1",
+                      "outcome_description": "Kavli, fiili ve takriri sünnet kavramlarını açıklar.",
+                      "question_count": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "course_code": "KURAN-8",
+          "course_name": "Kur'an-ı Kerim",
+          "terms": [
+            {
+              "term": "1. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (İklab, İdgam ve Sure Mesajı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Anlama ve Yaşama",
+                      "outcome_code": "KURAN.8.1.1",
+                      "outcome_description": "Kur'an'ın ahlaki olgunlaşma amacını açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.8.1.2",
+                      "outcome_description": "İklab ve İdgam (meal-gunne / bila-gunne) kurallarını açıklar ve örnekler.",
+                      "question_count": 3
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Sure Analizi",
+                      "outcome_code": "KURAN.8.1.3",
+                      "outcome_description": "İnşirah suresinin ayetlerinden mesajlar çıkarır.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Tecvid Uygulama Ağırlıklı)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 1,
+                      "unit_title": "Anlama ve Yaşama",
+                      "outcome_code": "KURAN.8.1.1",
+                      "outcome_description": "Kur'an'ı hayat rehberi edinmenin ilkelerini açıklar.",
+                      "question_count": 1
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.8.1.2",
+                      "outcome_description": "İklab kuralının harfini ve uygulanışını metin üzerinde gösterir.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 2,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.8.1.2-B",
+                      "outcome_description": "İdgam-ı Meal Gunne ve Bila Gunne örneklerini ayırt eder.",
+                      "question_count": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "term": "2. Dönem",
+              "exam_number": 1,
+              "scenarios": [
+                {
+                  "scenario_id": 1,
+                  "name": "Senaryo 1 (Kalkale, Ra Hükümleri ve Hucurat)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.8.3.1",
+                      "outcome_description": "Kalkale harflerini ve duraklarda okunuşunu açıklar.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.8.3.2",
+                      "outcome_description": "Ra harfinin kalın ve ince okunduğu durumları ayırt eder.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 4,
+                      "unit_title": "Sure Analizi",
+                      "outcome_code": "KURAN.8.4.1",
+                      "outcome_description": "Hucurat suresindeki ahlaki ilkeleri (suizan, tecessüs, gıybet) açıklar.",
+                      "question_count": 1
+                    }
+                  ]
+                },
+                {
+                  "scenario_id": 2,
+                  "name": "Senaryo 2 (Tecvid Kuralları Derinlik)",
+                  "total_questions": 5,
+                  "items": [
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.8.3.1",
+                      "outcome_description": "Kalkale kuralına verilen ayetlerden 3 örnek bulur.",
+                      "question_count": 2
+                    },
+                    {
+                      "unit_no": 3,
+                      "unit_title": "Tecvid Kuralları",
+                      "outcome_code": "KURAN.8.3.2",
+                      "outcome_description": "Ra harfinin hükümleriyle ilgili kaideleri açıklar.",
+                      "question_count": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

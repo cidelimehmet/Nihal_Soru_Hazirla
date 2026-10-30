@@ -4,7 +4,16 @@ Tevfik İleri İHO Soru Hazırlama, Soru Bankası & Çoklu Çıktı Sistemi
 """
 
 import os
+import sys
 from pathlib import Path
+
+# Windows konsollarında Türkçe ve Arapça karakterlerde UnicodeEncodeError hatasını önle
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -13,9 +22,9 @@ from pydantic import BaseModel
 import uvicorn
 
 from config import get_config, save_config, BASE_DIR, EXPORTS_DIR, DATA_DIR
-from curriculum_data import get_subjects, get_grades, get_units, CURRICULUM
+from curriculum_data import get_subjects, get_grades, get_units, load_curriculum_dict
 from gemini_engine import generate_questions_with_gemini
-from docx_exporter import generate_exam_docx, generate_answer_key_docx
+from docx_exporter import generate_exam_docx, generate_answer_key_docx, generate_source_verification_docx
 import database
 
 app = FastAPI(title="Tevfik İleri İHO Soru Hazırlama & Soru Bankası Sistemi", version="2.0.0")
@@ -27,6 +36,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def disable_static_cache(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path == "/" or request.url.path.startswith("/static"):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 STATIC_DIR = BASE_DIR / "static"
 STATIC_DIR.mkdir(exist_ok=True)
@@ -40,13 +58,15 @@ class LoginRequest(BaseModel):
 class GenerateExamRequest(BaseModel):
     subject: str
     grade: int
-    exam_type: str = "yazili_sinav" # 'yazili_sinav', 'etut_calisma', 'yaprak_test'
+    exam_type: str = "yazili_sinav" # 'yazili_sinav', 'bep_sinav', 'etut_calisma', 'yaprak_test'
     term: str = "1. Dönem"
     exam_no: str = "1. Yazılı"
     scenario: str = "Senaryo 1"
     question_count: int = 6
     selected_units: list[str] = []
     difficulty: str = "Dengeli"
+    scenario_items: list[dict] = []
+    bep_options: dict = {}
 
 class SingleQuestionRegenRequest(BaseModel):
     subject: str
@@ -56,6 +76,7 @@ class SingleQuestionRegenRequest(BaseModel):
     q_order: int
     selected_units: list[str] = []
     exam_type: str = "yazili_sinav"
+    bep_options: dict = {}
 
 class SaveExamRequest(BaseModel):
     id: int | None = None
@@ -70,6 +91,7 @@ class SaveExamRequest(BaseModel):
     total_points: int = 100
     questions: list
     header_info: dict = {}
+    bep_options: dict = {}
 
 class BankGenerateRequest(BaseModel):
     subject: str
@@ -121,13 +143,19 @@ async def api_save_config(data: ConfigUpdateRequest):
 @app.post("/api/login")
 async def api_login(req: LoginRequest):
     cfg = get_config()
-    if req.username == cfg["login_username"] and req.password == cfg["login_password"]:
+    expected_user = str(cfg.get("login_username", "nihal")).strip().lower()
+    expected_pass = str(cfg.get("login_password", "12345")).strip()
+
+    input_user = str(req.username or "").strip().lower()
+    input_pass = str(req.password or "").strip()
+
+    if input_user == expected_user and input_pass == expected_pass:
         return {
             "status": "success",
             "user": {
                 "username": req.username,
-                "teacher_name": cfg["teacher_name"],
-                "school_name": cfg["school_name"]
+                "teacher_name": cfg.get("teacher_name", "Nihal YILDIZ"),
+                "school_name": cfg.get("school_name", "KOCAELİ / DARICA - Tevfik İleri İmam Hatip Ortaokulu")
             }
         }
     raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı!")
@@ -176,6 +204,53 @@ async def api_reset_curriculum_manager():
     reset_curriculum_to_default()
     return {"status": "success", "message": "Müfredat MEB orijinal varsayılan ayarlarına döndürüldü."}
 
+# --- MEB SENARYO ŞABLONU VE YÖNETİCİSİ ENDPOINTLERİ ---
+@app.get("/api/scenarios")
+async def api_get_scenarios(subject: str | None = None, grade: int | None = None, term: str | None = None):
+    from curriculum_data import load_scenarios_dict, get_scenarios_for, get_units
+    if subject and grade and term:
+        scenarios = get_scenarios_for(subject, int(grade), term)
+        units = get_units(subject, int(grade))
+        return {
+            "status": "success",
+            "subject": subject,
+            "grade": int(grade),
+            "term": term,
+            "scenarios": scenarios,
+            "units": units
+        }
+    return {
+        "status": "success",
+        "scenarios_data": load_scenarios_dict()
+    }
+
+@app.post("/api/scenarios/save")
+async def api_save_scenarios(req: dict):
+    from curriculum_data import update_scenarios_for, get_scenarios_for
+    subject = req.get("subject")
+    grade = int(req.get("grade", 5))
+    term = req.get("term", "1. Dönem")
+    scenarios = req.get("scenarios", [])
+    if not subject:
+        raise HTTPException(status_code=400, detail="Ders bilgisi zorunludur.")
+    update_scenarios_for(subject, grade, term, scenarios)
+    updated_list = get_scenarios_for(subject, grade, term)
+    return {
+        "status": "success",
+        "message": "MEB Senaryosu ve kazanım dağılımları başarıyla güncellendi!",
+        "scenarios": updated_list
+    }
+
+@app.post("/api/scenarios/reset")
+async def api_reset_scenarios():
+    from curriculum_data import reset_scenarios_to_default, load_scenarios_dict
+    reset_scenarios_to_default()
+    return {
+        "status": "success",
+        "message": "MEB Senaryoları varsayılan Kocaeli/Darıca İHO şablonuna sıfırlandı.",
+        "scenarios_data": load_scenarios_dict()
+    }
+
 @app.post("/api/generate-exam")
 async def api_generate_exam(req: GenerateExamRequest):
     try:
@@ -188,7 +263,9 @@ async def api_generate_exam(req: GenerateExamRequest):
             question_count=req.question_count,
             selected_unit_ids=req.selected_units,
             difficulty=req.difficulty,
-            exam_type=req.exam_type
+            exam_type=req.exam_type,
+            scenario_items=req.scenario_items,
+            bep_options=req.bep_options
         )
         return {"status": "success", "data": data}
     except Exception as e:
@@ -198,19 +275,23 @@ async def api_generate_exam(req: GenerateExamRequest):
 async def api_regenerate_question(req: SingleQuestionRegenRequest):
     """Tek bir soruyu yeniden üretir."""
     try:
+        is_bep = (req.exam_type == "bep_sinav")
         data = generate_questions_with_gemini(
             subject_id=req.subject,
             grade=req.grade,
             term=req.term,
             exam_no=req.exam_no,
-            scenario="Özel",
-            question_count=1,
+            scenario="BEP Bireysel Kazanım" if is_bep else "Özel",
+            question_count=6 if is_bep else 1,
             selected_unit_ids=req.selected_units,
-            difficulty="Dengeli",
-            exam_type=req.exam_type
+            difficulty="Kolay" if is_bep else "Dengeli",
+            exam_type=req.exam_type,
+            bep_options=req.bep_options
         )
         if data.get("questions"):
-            q = data["questions"][0]
+            q_list = data["questions"]
+            pick_idx = (req.q_order - 1) % len(q_list)
+            q = q_list[pick_idx]
             q["q_order"] = req.q_order
             return {"status": "success", "question": q}
         raise HTTPException(status_code=500, detail="Soru üretilemedi.")
@@ -255,15 +336,36 @@ async def api_get_question_bank(
     grade: int | None = None,
     difficulty: str | None = None,
     q_type: str | None = None,
-    search: str | None = None
+    search: str | None = None,
+    origin_type: str | None = None,
+    usage_filter: str | None = None
 ):
-    items = database.get_question_bank_items(subject, grade, difficulty, q_type, search)
-    return {"status": "success", "items": items}
+    items = database.get_question_bank_items(
+        subject=subject,
+        grade=grade,
+        difficulty=difficulty,
+        q_type=q_type,
+        search=search,
+        origin_type=origin_type,
+        usage_filter=usage_filter
+    )
+    stats = database.get_question_bank_stats()
+    return {"status": "success", "items": items, "stats": stats}
 
 @app.post("/api/question-bank")
 async def api_add_question_to_bank(req: dict):
     new_id = database.add_question_to_bank(req)
     return {"status": "success", "id": new_id, "message": "Soru bankasına eklendi."}
+
+@app.put("/api/question-bank/{qid}")
+async def api_update_question_in_bank(qid: int, req: dict):
+    save_mode = req.get("save_mode", "overwrite_bank_only")
+    q_data = req.get("question_data", req)
+    try:
+        res = database.update_question_in_bank(qid, q_data, save_mode=save_mode)
+        return {"status": "success", **res}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.delete("/api/question-bank/{qid}")
 async def api_delete_question_from_bank(qid: int):
@@ -274,16 +376,21 @@ async def api_delete_question_from_bank(qid: int):
 async def api_generate_bank_questions(req: BankGenerateRequest):
     """Sınav yapmadan kitaptan doğrudan soru bankasına soru üretip depolar."""
     try:
+        target_exam_type = (
+            "bep_sinav" if req.question_type == "bep"
+            else "yaprak_test" if req.question_type == "coktan_secmeli"
+            else "yazili_sinav"
+        )
         data = generate_questions_with_gemini(
             subject_id=req.subject,
             grade=req.grade,
             term="1. Dönem",
             exam_no="Soru Havuzu",
-            scenario="Özel",
+            scenario="BEP Bireysel Kazanım" if req.question_type == "bep" else "Özel",
             question_count=req.count,
             selected_unit_ids=req.selected_units,
-            difficulty=req.difficulty,
-            exam_type="yaprak_test" if req.question_type == "coktan_secmeli" else "yazili_sinav"
+            difficulty="Kolay" if req.question_type == "bep" else req.difficulty,
+            exam_type=target_exam_type
         )
         saved_count = 0
         for q in data.get("questions", []):
@@ -339,7 +446,8 @@ async def api_export_docx(req: dict):
     layout = req.get("layout", "2_column")
     
     subject_id = exam_data.get("subject", "dkab")
-    subject_name = CURRICULUM.get(subject_id, {}).get("name", exam_data.get("subject", "Ders"))
+    curr = load_curriculum_dict()
+    subject_name = curr.get(subject_id, {}).get("name", exam_data.get("subject", "Ders"))
     exam_data["subject_name"] = subject_name
     
     cfg = get_config()
@@ -353,26 +461,7 @@ async def api_export_docx(req: dict):
         file_path = generate_answer_key_docx(exam_data)
         download_name = f"Cevap_Anahtari_{subject_name}_{exam_data.get('grade')}Sinif.docx"
     elif doc_type == "source_verification":
-        # Kitap ilişkisi doğrulama belgesi
-        from docx import Document
-        from docx.shared import Inches, Pt, RGBColor
-        doc = Document()
-        for s in doc.sections:
-            s.top_margin = Inches(0.5); s.bottom_margin = Inches(0.5)
-            s.left_margin = Inches(0.5); s.right_margin = Inches(0.5)
-        p = doc.add_paragraph()
-        r = p.add_run(f"KİTAP İLİŞKİSİ VE PEDAGOJİK SORU DOĞRULAMA RAPORU\n{exam_data.get('grade')}. Sınıf {subject_name}\n")
-        r.bold = True; r.font.size = Pt(12)
-        for q in exam_data.get("questions", []):
-            p_q = doc.add_paragraph()
-            p_q.add_run(f"Soru {q.get('q_order')}: ").bold = True
-            p_q.add_run(f"{q.get('question_text')}\n")
-            p_q.add_run(f"• Kaynak Kitap: {q.get('source_book', 'Ders Kitabı')} | {q.get('source_page', '')}\n").italic = True
-            p_q.add_run(f"• Bilişsel Düzey: {q.get('cognitive_level', 'Analiz')} | Güçlük: {q.get('difficulty', 'Orta')}\n")
-            p_q.add_run(f"• Pedagojik Bağlam: {q.get('source_context', '')}\n")
-            p_q.add_run(f"• Doğru Cevap: {q.get('answer_text', '')}\n").bold = True
-        file_path = EXPORTS_DIR / f"Kitap_Dogrulama_{subject_name}_{exam_data.get('grade')}Sinif.docx"
-        doc.save(str(file_path))
+        file_path = generate_source_verification_docx(exam_data)
         download_name = f"Kitap_Dogrulama_{subject_name}_{exam_data.get('grade')}Sinif.docx"
     else:
         file_path = generate_exam_docx(exam_data, layout=layout)

@@ -45,12 +45,18 @@ def get_config() -> dict:
         "port": int(env_dict.get("PORT", "8000")),
     }
     
-    # config.json varsa üzerine yaz
+    # config.json varsa yalnızca .env dosyasından daha yeni ise üzerine yaz
+    # (Böylece kullanıcının .env içinde elle yaptığı değişiklikler eski config.json tarafından ezilmez)
     if CONFIG_JSON_PATH.exists():
         try:
-            with open(CONFIG_JSON_PATH, "r", encoding="utf-8") as f:
-                override = json.load(f)
-                cfg.update(override)
+            use_json = True
+            if ENV_PATH.exists():
+                if ENV_PATH.stat().st_mtime >= CONFIG_JSON_PATH.stat().st_mtime - 1.0:
+                    use_json = False
+            if use_json:
+                with open(CONFIG_JSON_PATH, "r", encoding="utf-8") as f:
+                    override = json.load(f)
+                    cfg.update(override)
         except Exception:
             pass
             

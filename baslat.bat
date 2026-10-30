@@ -1,6 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
+set PYTHONIOENCODING=utf-8
 title Tevfik Ileri IHO Soru Hazirlama Sistemi
 color 1F
 
