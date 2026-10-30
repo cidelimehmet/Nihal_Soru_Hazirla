@@ -474,18 +474,36 @@ async def api_export_docx(req: dict):
     )
 
 if __name__ == "__main__":
+    import sys
     import threading
     import time
     import urllib.request
     import webbrowser
 
+    # Penceresiz (pythonw / vbs) çalışmada stdout/stderr None olabileceği için güvenli yönlendirme
+    if sys.stdout is None:
+        sys.stdout = open(os.devnull, "w", encoding="utf-8")
+    if sys.stderr is None:
+        sys.stderr = open(os.devnull, "w", encoding="utf-8")
+
     cfg = get_config()
     port = cfg.get("port", 8000)
+    url = f"http://127.0.0.1:{port}"
+    check_url = f"http://127.0.0.1:{port}/api/config"
+
+    # Eğer sunucu zaten arka planda çalışıyorsa yeni port hatası vermek yerine doğrudan tarayıcıyı aç
+    try:
+        req = urllib.request.Request(check_url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=0.8) as resp:
+            if resp.status == 200:
+                print(f"Sunucu zaten calisiyor! Tarayici aciliyor: {url}")
+                webbrowser.open(url)
+                sys.exit(0)
+    except Exception:
+        pass
 
     # Sunucu tam ayağa kalktığında tarayıcıyı açan akıllı kontrol mekanizması
     def open_browser_when_ready():
-        url = f"http://127.0.0.1:{port}"
-        check_url = f"http://127.0.0.1:{port}/api/config"
         for _ in range(40): # En fazla 20 saniye kontrol et
             try:
                 time.sleep(0.5)
@@ -502,4 +520,4 @@ if __name__ == "__main__":
 
     print(f"Tevfik İleri İHO Soru Hazırlama & Soru Bankası Başlatılıyor...")
     print(f"Adres: http://localhost:{port}")
-    uvicorn.run("main:app", host="127.0.0.1", port=port, reload=True)
+    uvicorn.run(app, host="127.0.0.1", port=port, reload=False)

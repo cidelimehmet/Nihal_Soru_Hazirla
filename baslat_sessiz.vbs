@@ -1,6 +1,11 @@
 Set WshShell = CreateObject("WScript.Shell")
-' Bu dosyanın bulunduğu klasör yolunu al
-ScriptDir = CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)
-' baslat.bat dosyasını tamamen arka planda (siyah konsol penceresi olmadan) çalıştır
+Set FSO = CreateObject("Scripting.FileSystemObject")
+ScriptDir = FSO.GetParentFolderName(WScript.ScriptFullName)
 WshShell.CurrentDirectory = ScriptDir
-WshShell.Run "cmd /c baslat.bat", 0, False
+
+PortablePyW = ScriptDir & "\python_embed\pythonw.exe"
+If FSO.FileExists(PortablePyW) Then
+    WshShell.Run """" & PortablePyW & """ """ & ScriptDir & "\main.py""", 0, False
+Else
+    WshShell.Run "cmd /c baslat.bat", 0, False
+End If

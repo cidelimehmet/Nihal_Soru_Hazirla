@@ -51,9 +51,10 @@ Bu uygulama, Ankara Tevfik İleri İmam Hatip Ortaokulu öğretmenlerimizin MEB 
 
 ---
 
-### 📂 Klasörün Başka Bilgisayara Taşınması
+### 📂 Klasörün Başka Bilgisayara Taşınması (Python Kurulumu Gerekmez!)
 
-Bu klasörü (`Nihal_Soru_Hazirla`) USB bellek veya harici disk ile eşinizin bilgisayarına kopyaladığınızda:
-- Bilgisayarda Python kurulu olması yeterlidir (`python.org`).
-- `baslat.bat` dosyasına tıklandığında tüm gereksinimler otomatik hazırlanır ve uygulama çalışır.
-- Tüm hazırlanan sınavlar klasör içindeki yerel veritabanında (`data/soru_hazirla.db`) saklanır, taşındığında hiçbir sınav kaybolmaz.
+Bu klasör (`Nihal_Soru_Hazirla`) **%100 Taşınabilir (Portable)** yapıdadır. Klasörün içindeki `python_embed` dizininde gömülü Python 3.12 ve tüm gerekli kütüphaneler (`FastAPI`, `Uvicorn`, `PyMuPDF`, `python-docx`, `RapidOCR`, `google-genai` vb.) hazır olarak yer almaktadır:
+- Klasörü USB bellek veya harici disk ile **Python kurulu olmayan** herhangi bir Windows bilgisayara veya akıllı tahtaya kopyalamanız yeterlidir.
+- Hiçbir ek kurulum yapmadan doğrudan `baslat.bat` (veya penceresiz çalışması için `baslat_sessiz.vbs`) dosyasına çift tıkladığınızda sistem anında çalışır.
+- İsterseniz yeni bilgisayarda `Masaustune_Kisayol_Olustur.bat` dosyasına çift tıklayarak masaüstüne kısayol simgesi ekleyebilirsiniz.
+- Tüm hazırlanan sınavlar ve soru bankası klasör içindeki yerel veritabanında (`data/soru_hazirla.db`) saklanır, taşındığında hiçbir sınav kaybolmaz.

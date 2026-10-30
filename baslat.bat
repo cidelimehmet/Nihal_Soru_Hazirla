@@ -2,6 +2,7 @@
 setlocal
 cd /d "%~dp0"
 set PYTHONIOENCODING=utf-8
+set PYTHONUTF8=1
 title Tevfik Ileri IHO Soru Hazirlama Sistemi
 color 1F
 
@@ -11,32 +12,37 @@ echo    MEB 2026 OYSS SORU HAZIRLAMA VE YAZILI SINAV SISTEMI
 echo ======================================================================
 echo.
 
-echo [1/3] Python kontrol ediliyor...
+:: 1. Klasor icindeki tasinabilir (Portable) Python kontrolu (Python kurulu olmayan PC'ler icin)
+if exist "%~dp0python_embed\python.exe" (
+    set "PY_EXE=%~dp0python_embed\python.exe"
+    echo [1/2] Klasor ici Tasinabilir Python (python_embed^) bulundu. Kurulum gerekmiyor!
+    goto :RUN_SERVER
+)
+
+:: 2. Yedek: Sistemde kurulu Python kontrolu
+echo [1/2] Python kontrol ediliyor...
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [HATA] Bilgisayarinizda Python kurulu degil veya PATH'e eklenmemis!
-    echo Lutfen python.org adresinden Python'i indirip kurunuz.
-    echo Kurulum sirasinda 'Add Python to PATH' kutusunu isaretleyiniz.
-    echo.
+    echo [HATA] python_embed klasoru veya sistem Python'u bulunamadi!
     pause
     exit /b
 )
+set "PY_EXE=python"
 
-echo [2/3] Sistem kutuphaneleri kontrol ediliyor...
-python -c "import fastapi, uvicorn, pymupdf" >nul 2>&1
+"%PY_EXE%" -c "import fastapi, uvicorn, pymupdf, docx" >nul 2>&1
 if errorlevel 1 (
     echo Eksik paketler yukleniyor, lutfen bekleyiniz...
-    pip install -r requirements.txt
+    "%PY_EXE%" -m pip install -r requirements.txt
 )
 
-echo [3/3] Soru Hazirlama Sistemi Baslatiliyor...
+:RUN_SERVER
+echo [2/2] Soru Hazirlama Sistemi Baslatiliyor...
 echo.
 echo Sunucu calisiyor, sistem hazir oldugunda tarayiciniz otomatik acilacaktir...
 echo (Programi kapatmak istediginizde bu pencereyi kapatabilirsiniz)
 echo.
 
-:: FastAPI sunucusunu baslat (sunucu hazir oldugu an tarayiciyi kendisi acar)
-python main.py
+"%PY_EXE%" main.py
 
 echo.
 echo Sunucu kapandi.
